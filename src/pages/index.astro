@@ -1059,6 +1059,15 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         link.addEventListener('click', (event) => {
           const targetTab = link.getAttribute('data-tab-link');
           if (!targetTab) return;
+          const href = link.getAttribute('href');
+          if (!href) return;
+          const targetUrl = new URL(href, window.location.href);
+          const isSamePageHashLink =
+            targetUrl.origin === window.location.origin &&
+            targetUrl.pathname === window.location.pathname &&
+            targetUrl.hash === `#${targetTab}`;
+
+          if (!isSamePageHashLink) return;
           event.preventDefault();
           activateTab(targetTab, { updateHash: true });
           document.querySelector('.tab-shell')?.scrollIntoView({ behavior: motionDisabled ? 'auto' : 'smooth', block: 'start' });
