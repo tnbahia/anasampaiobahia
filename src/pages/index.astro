@@ -1,6 +1,8 @@
 ---
 const googleFormsUrl = '';
 const hasGoogleForm = Boolean(googleFormsUrl);
+const contactUrl = `${import.meta.env.BASE_URL}#contacto`;
+const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 ---
 
 <html lang="pt-PT">
@@ -236,11 +238,11 @@ const hasGoogleForm = Boolean(googleFormsUrl);
                 Entrar em contacto
               </a>
             ) : (
-              <a class="button button--primary" href="#contacto">
+              <a class="button button--primary" href={contactUrl}>
                 Como entrar em contacto
               </a>
             )}
-            <a class="button button--secondary" href="#artigos">Ver artigos</a>
+            <a class="button button--secondary" href={articlesUrl}>Ver artigos</a>
           </div>
         </div>
       </header>
