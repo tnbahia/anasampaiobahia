@@ -988,6 +988,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
       const tabLinks = document.querySelectorAll('[data-tab-link]');
       const motionDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const revealItems = Array.from(document.querySelectorAll('.reveal'));
       const revealObserver = motionDisabled
         ? null
         : new IntersectionObserver(
@@ -1003,8 +1004,6 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           );
 
       const updateReveals = () => {
-        const revealItems = document.querySelectorAll('.reveal');
-
         if (motionDisabled) {
           revealItems.forEach((item) => item.classList.add('is-visible'));
           return;
@@ -1018,7 +1017,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       };
 
       const activateTab = (tabId, options = {}) => {
-        const { focus = false, updateHash = true } = options;
+        const { focus = false, hashMode = 'push' } = options;
 
         tabs.forEach((tab) => {
           const isActive = tab.dataset.tab === tabId;
@@ -1031,15 +1030,19 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           panel.hidden = panel.dataset.panel !== tabId;
         });
 
-        if (updateHash && window.location.hash !== `#${tabId}`) {
-          window.location.hash = tabId;
+        if (hashMode !== 'none' && window.location.hash !== `#${tabId}`) {
+          if (hashMode === 'replace') {
+            history.replaceState(null, '', `#${tabId}`);
+          } else {
+            window.location.hash = tabId;
+          }
         }
 
         updateReveals();
       };
 
       tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => activateTab(tab.dataset.tab, { updateHash: true }));
+        tab.addEventListener('click', () => activateTab(tab.dataset.tab, { hashMode: 'push' }));
         tab.addEventListener('keydown', (event) => {
           const nextIndexMap = {
             ArrowRight: (index + 1) % tabs.length,
@@ -1052,7 +1055,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           if (nextIndex === undefined) return;
 
           event.preventDefault();
-          activateTab(tabs[nextIndex].dataset.tab, { focus: true, updateHash: true });
+          activateTab(tabs[nextIndex].dataset.tab, { focus: true, hashMode: 'replace' });
         });
       });
 
@@ -1070,19 +1073,21 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
           if (!isSamePageHashLink) return;
           event.preventDefault();
-          activateTab(targetTab, { updateHash: true });
+          activateTab(targetTab, { hashMode: 'push' });
           document.querySelector('.tab-shell')?.scrollIntoView({ behavior: motionDisabled ? 'auto' : 'smooth', block: 'start' });
         });
       });
 
       const hashTab = window.location.hash.replace('#', '');
       const defaultTab = tabs.some((tab) => tab.dataset.tab === hashTab) ? hashTab : 'sobre';
-      activateTab(defaultTab, { updateHash: false });
+      activateTab(defaultTab, { hashMode: 'none' });
 
       window.addEventListener('hashchange', () => {
         const nextHashTab = window.location.hash.replace('#', '');
         if (tabs.some((tab) => tab.dataset.tab === nextHashTab)) {
-          activateTab(nextHashTab, { updateHash: false });
+          activateTab(nextHashTab, { hashMode: 'none' });
+        } else {
+          activateTab('sobre', { hashMode: 'none' });
         }
       });
 
