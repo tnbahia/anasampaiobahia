@@ -1018,6 +1018,9 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         });
       };
 
+      const normalizeTabId = (value) =>
+        value.replace(/^#/, '').replace(/^tab-/, '').replace(/^panel-/, '');
+
       const activateTab = (tabId, options = {}) => {
         const { focus = false, hashMode = 'push' } = options;
 
@@ -1088,17 +1091,17 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
           if (!isSamePageHashLink) return;
           event.preventDefault();
-          activateTab(targetTab, { hashMode: 'push' });
+          activateTab(targetTab, { focus: true, hashMode: 'push' });
           document.querySelector('.tab-shell')?.scrollIntoView({ behavior: motionDisabled ? 'auto' : 'smooth', block: 'start' });
         });
       });
 
-      const hashTab = window.location.hash.replace('#', '');
+      const hashTab = normalizeTabId(window.location.hash);
       const defaultTab = tabs.some((tab) => tab.dataset.tab === hashTab) ? hashTab : 'sobre';
       activateTab(defaultTab, { hashMode: 'none' });
 
       const syncTabWithUrl = () => {
-        const nextHashTab = window.location.hash.replace('#', '');
+        const nextHashTab = normalizeTabId(window.location.hash);
         if (tabs.some((tab) => tab.dataset.tab === nextHashTab)) {
           activateTab(nextHashTab, { hashMode: 'none' });
         }
