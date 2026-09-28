@@ -137,6 +137,11 @@ const hasGoogleForm = Boolean(googleFormsUrl);
         transform: translateY(-1px);
       }
 
+      .button:focus-visible {
+        outline: 3px solid var(--accent-dark);
+        outline-offset: 3px;
+      }
+
       main {
         padding-bottom: 4rem;
       }

@@ -36,11 +36,15 @@ jobs:
 
       - name: Set deployment URL
         run: |
-          echo "SITE_URL=https://${GITHUB_REPOSITORY_OWNER}.github.io" >> "$GITHUB_ENV"
-          if [ "${GITHUB_REPOSITORY#*/}" = "${GITHUB_REPOSITORY_OWNER}.github.io" ]; then
+          repo_name="${GITHUB_REPOSITORY#*/}"
+          owner_name="${GITHUB_REPOSITORY_OWNER}"
+
+          if [ "${repo_name,,}" = "${owner_name,,}.github.io" ]; then
+            echo "SITE_URL=https://${repo_name}" >> "$GITHUB_ENV"
             echo "BASE_PATH=/" >> "$GITHUB_ENV"
           else
-            echo "BASE_PATH=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://${owner_name}.github.io" >> "$GITHUB_ENV"
+            echo "BASE_PATH=/${repo_name}" >> "$GITHUB_ENV"
           fi
 
       - name: Build site
