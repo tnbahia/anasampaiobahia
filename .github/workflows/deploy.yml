@@ -44,7 +44,7 @@ jobs:
             echo "BASE_PATH=/" >> "$GITHUB_ENV"
           else
             echo "SITE_URL=https://${owner_name}.github.io" >> "$GITHUB_ENV"
-            echo "BASE_PATH=/${repo_name}" >> "$GITHUB_ENV"
+            echo "BASE_PATH=/${repo_name}/" >> "$GITHUB_ENV"
           fi
 
       - name: Build site
