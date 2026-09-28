@@ -523,11 +523,15 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
       .tablist {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 0.75rem;
+        overflow-x: auto;
+        padding-bottom: 0.35rem;
+        scrollbar-width: thin;
       }
 
       .tab {
+        flex: 0 0 auto;
         padding: 0.85rem 1rem;
         border: 1px solid var(--border);
         border-radius: 1rem;
@@ -984,9 +988,10 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
       });
 
-      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
-      const tablist = document.querySelector('[role="tablist"]');
-      const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+      const tabShell = document.querySelector('.tab-shell');
+      const tabs = Array.from(tabShell?.querySelectorAll('[role="tab"]') || []);
+      const tablist = tabShell?.querySelector('[role="tablist"]');
+      const panels = Array.from(tabShell?.querySelectorAll('[role="tabpanel"]') || []);
       const tabLinks = document.querySelectorAll('[data-tab-link]');
       const motionDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const supportsIntersectionObserver = 'IntersectionObserver' in window;
@@ -1029,6 +1034,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
       const activateTab = (tabId, options = {}) => {
         const { focus = false, hashMode = 'push' } = options;
+        const activeTabButton = tabs.find((tab) => tab.dataset.tab === tabId);
 
         tabs.forEach((tab) => {
           const isActive = tab.dataset.tab === tabId;
@@ -1043,11 +1049,19 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           panel.setAttribute('aria-hidden', String(!isActive));
         });
 
-        if (hashMode !== 'none' && window.location.hash !== `#${tabId}`) {
+        if (activeTabButton) {
+          activeTabButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
+
+        if (hashMode !== 'none') {
           const nextUrl = new URL(window.location.href);
           nextUrl.hash = tabId;
           const nextState = buildHistoryState(tabId);
-          if (hashMode === 'replace') {
+          if (window.location.hash === `#${tabId}`) {
+            if (history.state?.activeTab !== tabId) {
+              history.replaceState(nextState, '', nextUrl);
+            }
+          } else if (hashMode === 'replace') {
             history.replaceState(nextState, '', nextUrl);
           } else {
             history.pushState(nextState, '', nextUrl);
