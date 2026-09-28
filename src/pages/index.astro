@@ -989,11 +989,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
       const tabLinks = document.querySelectorAll('[data-tab-link]');
       const motionDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const supportsIntersectionObserver = 'IntersectionObserver' in window;
       const tabOrientation = tablist?.getAttribute('aria-orientation') || 'horizontal';
       const revealItems = Array.from(document.querySelectorAll('.reveal'));
-      const revealObserver = motionDisabled
-        ? null
-        : new IntersectionObserver(
+      const revealObserver = !motionDisabled && supportsIntersectionObserver
+        ? new IntersectionObserver(
             (entries) => {
               entries.forEach((entry) => {
                 if (entry.isIntersecting) {
@@ -1003,10 +1003,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
               });
             },
             { threshold: 0.18 }
-          );
+          )
+        : null;
 
       const updateReveals = () => {
-        if (motionDisabled) {
+        if (motionDisabled || !supportsIntersectionObserver) {
           revealItems.forEach((item) => item.classList.add('is-visible'));
           return;
         }
@@ -1036,7 +1037,8 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         });
 
         if (hashMode !== 'none' && window.location.hash !== `#${tabId}`) {
-          const nextUrl = `${window.location.pathname}${window.location.search}#${tabId}`;
+          const nextUrl = new URL(window.location.href);
+          nextUrl.hash = tabId;
           if (hashMode === 'replace') {
             history.replaceState(null, '', nextUrl);
           } else {
@@ -1104,6 +1106,8 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         const nextHashTab = normalizeTabId(window.location.hash);
         if (tabs.some((tab) => tab.dataset.tab === nextHashTab)) {
           activateTab(nextHashTab, { hashMode: 'none' });
+        } else {
+          activateTab('sobre', { hashMode: 'none' });
         }
       };
 
