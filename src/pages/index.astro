@@ -1046,7 +1046,6 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         panels.forEach((panel) => {
           const isActive = panel.dataset.panel === tabId;
           panel.hidden = !isActive;
-          panel.setAttribute('aria-hidden', String(!isActive));
         });
 
         if (activeTabButton && scrollTabIntoView) {
@@ -1115,7 +1114,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           if (!isSamePageHashLink) return;
           if (tabs.find((tab) => tab.dataset.tab === targetTab)?.getAttribute('aria-selected') === 'true') return;
           event.preventDefault();
-          activateTab(targetTab, { focus: true, hashMode: 'push' });
+          activateTab(targetTab, { hashMode: 'push' });
           document.querySelector('.tab-shell')?.scrollIntoView({ behavior: motionDisabled ? 'auto' : 'smooth', block: 'start' });
         });
       });
