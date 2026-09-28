@@ -1038,7 +1038,9 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         });
 
         panels.forEach((panel) => {
-          panel.hidden = panel.dataset.panel !== tabId;
+          const isActive = panel.dataset.panel === tabId;
+          panel.hidden = !isActive;
+          panel.setAttribute('aria-hidden', String(!isActive));
         });
 
         if (hashMode !== 'none' && window.location.hash !== `#${tabId}`) {
@@ -1103,7 +1105,9 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       const hashTab = normalizeTabId(window.location.hash);
       const defaultTab = tabs.some((tab) => tab.dataset.tab === hashTab) ? hashTab : 'sobre';
       activateTab(defaultTab, { hashMode: 'none' });
-      history.replaceState(buildHistoryState(defaultTab), '', window.location.href);
+      if (history.state?.activeTab !== defaultTab) {
+        history.replaceState(buildHistoryState(defaultTab), '', window.location.href);
+      }
 
       const syncTabWithUrl = () => {
         const nextHashTab = normalizeTabId(window.location.hash);
