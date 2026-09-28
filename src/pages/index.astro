@@ -1022,6 +1022,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       const normalizeTabId = (value) =>
         value.replace(/^#/, '').replace(/^tab-/, '').replace(/^panel-/, '');
 
+      const buildHistoryState = (tabId) => {
+        const currentState = history.state && typeof history.state === 'object' ? history.state : {};
+        return { ...currentState, activeTab: tabId };
+      };
+
       const activateTab = (tabId, options = {}) => {
         const { focus = false, hashMode = 'push' } = options;
 
@@ -1039,10 +1044,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         if (hashMode !== 'none' && window.location.hash !== `#${tabId}`) {
           const nextUrl = new URL(window.location.href);
           nextUrl.hash = tabId;
+          const nextState = buildHistoryState(tabId);
           if (hashMode === 'replace') {
-            history.replaceState(history.state, '', nextUrl);
+            history.replaceState(nextState, '', nextUrl);
           } else {
-            history.pushState(history.state, '', nextUrl);
+            history.pushState(nextState, '', nextUrl);
           }
         }
 
@@ -1097,6 +1103,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       const hashTab = normalizeTabId(window.location.hash);
       const defaultTab = tabs.some((tab) => tab.dataset.tab === hashTab) ? hashTab : 'sobre';
       activateTab(defaultTab, { hashMode: 'none' });
+      history.replaceState(buildHistoryState(defaultTab), '', window.location.href);
 
       const syncTabWithUrl = () => {
         const nextHashTab = normalizeTabId(window.location.hash);
@@ -1108,7 +1115,14 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       };
 
       window.addEventListener('hashchange', syncTabWithUrl);
-      window.addEventListener('popstate', syncTabWithUrl);
+      window.addEventListener('popstate', (event) => {
+        const stateTab = normalizeTabId(event.state?.activeTab || window.location.hash);
+        if (tabs.some((tab) => tab.dataset.tab === stateTab)) {
+          activateTab(stateTab, { hashMode: 'none' });
+        } else {
+          activateTab('sobre', { hashMode: 'none' });
+        }
+      });
 
       updateReveals();
     </script>
