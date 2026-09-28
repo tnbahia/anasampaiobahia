@@ -1042,7 +1042,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           if (hashMode === 'replace') {
             history.replaceState(null, '', nextUrl);
           } else {
-            history.pushState(null, '', nextUrl);
+            window.location.hash = nextUrl.hash;
           }
         }
 
@@ -1063,10 +1063,6 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           } else {
             nextIndexMap.ArrowRight = (index + 1) % tabs.length;
             nextIndexMap.ArrowLeft = (index - 1 + tabs.length) % tabs.length;
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-              event.preventDefault();
-              return;
-            }
           }
 
           const nextIndex = nextIndexMap[event.key];
