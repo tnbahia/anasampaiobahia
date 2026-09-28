@@ -38,13 +38,15 @@ jobs:
         run: |
           repo_name="${GITHUB_REPOSITORY#*/}"
           owner_name="${GITHUB_REPOSITORY_OWNER}"
+          repo_name_lower="${repo_name,,}"
+          owner_name_lower="${owner_name,,}"
 
-          if [ "${repo_name,,}" = "${owner_name,,}.github.io" ]; then
-            echo "SITE_URL=https://${repo_name}" >> "$GITHUB_ENV"
+          if [ "${repo_name_lower}" = "${owner_name_lower}.github.io" ]; then
+            echo "SITE_URL=https://${repo_name_lower}" >> "$GITHUB_ENV"
             echo "BASE_PATH=/" >> "$GITHUB_ENV"
           else
-            echo "SITE_URL=https://${owner_name}.github.io" >> "$GITHUB_ENV"
-            echo "BASE_PATH=/${repo_name}/" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://${owner_name_lower}.github.io" >> "$GITHUB_ENV"
+            echo "BASE_PATH=/${repo_name_lower}/" >> "$GITHUB_ENV"
           fi
 
       - name: Build site
