@@ -19,7 +19,7 @@ npm run build
 
 O conteúdo principal está em `src/pages/index.astro`.
 
-- Atualize as listas de formação, locais de trabalho, projetos e artigos diretamente no topo do ficheiro.
+- Atualize os textos e secções diretamente em `src/pages/index.astro`.
 - Substitua `googleFormsUrl` pelo link definitivo do Google Forms.
 
 ## Deploy
