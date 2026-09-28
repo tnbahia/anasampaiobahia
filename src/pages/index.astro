@@ -1,5 +1,6 @@
 ---
-const googleFormsUrl = 'https://forms.gle/substituir-pelo-link-do-formulario';
+const googleFormsUrl = '';
+const hasGoogleForm = Boolean(googleFormsUrl);
 
 const training = [
   'Licenciatura e/ou mestrado em Psicologia — detalhe a adicionar',
@@ -162,6 +163,12 @@ const articles = [
         background: #fff;
       }
 
+      .button--disabled {
+        background: #f3ede6;
+        color: var(--muted);
+        cursor: not-allowed;
+      }
+
       .button:hover {
         transform: translateY(-1px);
       }
@@ -255,9 +262,15 @@ const articles = [
             estiverem disponíveis.
           </p>
           <div class="actions">
-            <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noreferrer">
-              Entrar em contacto
-            </a>
+            {hasGoogleForm ? (
+              <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noreferrer">
+                Entrar em contacto
+              </a>
+            ) : (
+              <a class="button button--primary" href="#contacto">
+                Como entrar em contacto
+              </a>
+            )}
             <a class="button button--secondary" href="#artigos">Ver artigos</a>
           </div>
         </div>
@@ -349,14 +362,18 @@ const articles = [
             <div class="section-heading">
               <h2 id="contacto">Contacto</h2>
               <p>
-                O formulário pode ficar alojado no Google Forms. Basta substituir o link atual pelo URL
-                definitivo quando estiver disponível.
+                O formulário pode ficar alojado no Google Forms. Basta substituir o valor de
+                <strong>googleFormsUrl</strong> pelo URL definitivo quando estiver disponível.
               </p>
             </div>
             <div class="actions">
-              <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noreferrer">
-                Abrir formulário de contacto
-              </a>
+              {hasGoogleForm ? (
+                <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noreferrer">
+                  Abrir formulário de contacto
+                </a>
+              ) : (
+                <span class="button button--disabled">Formulário disponível em breve</span>
+              )}
             </div>
           </div>
         </section>
