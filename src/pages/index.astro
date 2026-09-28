@@ -1058,7 +1058,10 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       };
 
       tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => activateTab(tab.dataset.tab, { hashMode: 'push' }));
+        tab.addEventListener('click', () => {
+          if (tab.getAttribute('aria-selected') === 'true') return;
+          activateTab(tab.dataset.tab, { hashMode: 'push' });
+        });
         tab.addEventListener('keydown', (event) => {
           const nextIndexMap = {
             Home: 0,
@@ -1096,6 +1099,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
             targetUrl.hash === `#${targetTab}`;
 
           if (!isSamePageHashLink) return;
+          if (tabs.find((tab) => tab.dataset.tab === targetTab)?.getAttribute('aria-selected') === 'true') return;
           event.preventDefault();
           activateTab(targetTab, { focus: true, hashMode: 'push' });
           document.querySelector('.tab-shell')?.scrollIntoView({ behavior: motionDisabled ? 'auto' : 'smooth', block: 'start' });
