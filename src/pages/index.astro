@@ -511,6 +511,63 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         font-weight: 700;
       }
 
+      .tab-shell {
+        padding: 1.25rem;
+      }
+
+      .tab-shell__header {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .tablist {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .tab {
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        background: var(--surface);
+        color: var(--muted);
+        cursor: pointer;
+        transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+      }
+
+      .tab[aria-selected='true'] {
+        color: var(--text);
+        background: linear-gradient(135deg, var(--accent-soft), var(--secondary-soft));
+        border-color: rgba(159, 95, 114, 0.28);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .tab:hover {
+        transform: translateY(-3px);
+        border-color: rgba(159, 95, 114, 0.22);
+      }
+
+      .tab:focus-visible {
+        outline: 3px solid var(--accent-strong);
+        outline-offset: 3px;
+      }
+
+      .tab-panels {
+        position: relative;
+      }
+
+      .tab-panel {
+        display: grid;
+        gap: 1.25rem;
+        animation: panelFade 260ms ease;
+      }
+
+      .tab-panel[hidden] {
+        display: none;
+      }
+
       .reveal {
         opacity: 0;
         transform: translateY(28px);
@@ -550,6 +607,17 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         }
       }
 
+      @keyframes panelFade {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       @media (max-width: 880px) {
         .topbar {
           align-items: stretch;
@@ -583,6 +651,10 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
         .panel-grid {
           grid-template-columns: 1fr;
+        }
+
+        .tab-shell {
+          padding: 1rem;
         }
 
         .shell,
@@ -627,7 +699,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           <span>Ana Sampaio Bahia</span>
         </a>
         <div class="topbar__actions">
-          <a class="button button--secondary" href={articlesUrl}>Artigos</a>
+          <a class="button button--secondary" href={articlesUrl} data-tab-link="artigos">Artigos</a>
           <button class="theme-toggle" type="button" aria-live="polite" data-theme-toggle>
             <span aria-hidden="true">🌙</span>
             <span data-theme-label>Modo escuro</span>
@@ -657,11 +729,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
                   Entrar em contacto
                 </a>
               ) : (
-                <a class="button button--primary" href={contactUrl}>
+                <a class="button button--primary" href={contactUrl} data-tab-link="contacto">
                   Como entrar em contacto
                 </a>
               )}
-              <a class="button button--secondary" href={articlesUrl}>Explorar artigos</a>
+              <a class="button button--secondary" href={articlesUrl} data-tab-link="artigos">Explorar artigos</a>
             </div>
           </div>
         </div>
@@ -688,114 +760,179 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       </header>
 
       <main>
-        <section class="shell reveal" aria-labelledby="sobre">
-          <div class="section-heading">
-            <h2 id="sobre">Sobre a Ana</h2>
-            <p>
-              Esta apresentação pode evoluir facilmente com biografia, metodologia de trabalho,
-              áreas de intervenção e público acompanhado, mantendo um tom acolhedor e contemporâneo.
-            </p>
+        <section class="shell tab-shell reveal" aria-labelledby="conteudo">
+          <div class="tab-shell__header">
+            <div class="section-heading">
+              <h2 id="conteudo">Conteúdo organizado por separadores</h2>
+              <p>
+                Em vez de apresentar tudo numa única sequência, cada área tem agora o seu próprio
+                separador para tornar a navegação mais leve e focada.
+              </p>
+            </div>
+            <div class="tablist" role="tablist" aria-label="Secções principais">
+              <button class="tab" id="tab-sobre" type="button" role="tab" aria-selected="true" aria-controls="panel-sobre" tabindex="0" data-tab="sobre">
+                Sobre
+              </button>
+              <button class="tab" id="tab-formacao" type="button" role="tab" aria-selected="false" aria-controls="panel-formacao" tabindex="-1" data-tab="formacao">
+                Formação
+              </button>
+              <button class="tab" id="tab-locais" type="button" role="tab" aria-selected="false" aria-controls="panel-locais" tabindex="-1" data-tab="locais">
+                Locais
+              </button>
+              <button class="tab" id="tab-projetos" type="button" role="tab" aria-selected="false" aria-controls="panel-projetos" tabindex="-1" data-tab="projetos">
+                Projetos
+              </button>
+              <button class="tab" id="tab-artigos" type="button" role="tab" aria-selected="false" aria-controls="panel-artigos" tabindex="-1" data-tab="artigos">
+                Artigos
+              </button>
+              <button class="tab" id="tab-contacto" type="button" role="tab" aria-selected="false" aria-controls="panel-contacto" tabindex="-1" data-tab="contacto">
+                Contacto
+              </button>
+            </div>
           </div>
-          <div class="features">
-            <article class="feature reveal delay-1">
-              <div class="feature__icon" aria-hidden="true">✨</div>
-              <h3>Primeira impressão mais forte</h3>
-              <p>Camadas visuais, gradientes suaves e cartões com profundidade tornam a página mais memorável.</p>
-            </article>
-            <article class="feature reveal delay-2">
-              <div class="feature__icon" aria-hidden="true">🌗</div>
-              <h3>Conforto em qualquer contexto</h3>
-              <p>O modo claro e escuro adapta a experiência ao utilizador sem depender de bibliotecas externas.</p>
-            </article>
-            <article class="feature reveal delay-3">
-              <div class="feature__icon" aria-hidden="true">💬</div>
-              <h3>Leitura mais envolvente</h3>
-              <p>Melhor hierarquia visual para destacar informação profissional, artigos e próximos passos.</p>
-            </article>
-          </div>
-        </section>
 
-        <section class="shell reveal" aria-labelledby="formacao">
-          <div class="section-heading">
-            <h2 id="formacao">Formação</h2>
-            <p>Secção preparada para evidenciar percurso académico, especializações e atualização contínua.</p>
-          </div>
-          <div class="card reveal delay-1">
-            <ul class="stack">
-              <li>Licenciatura e/ou mestrado em Psicologia — detalhe a adicionar</li>
-              <li>Especializações clínicas ou formação complementar — detalhe a adicionar</li>
-              <li>Cursos, certificações e supervisão contínua — detalhe a adicionar</li>
-            </ul>
-          </div>
-        </section>
+          <div class="tab-panels">
+            <section class="tab-panel" id="panel-sobre" role="tabpanel" aria-labelledby="tab-sobre" data-panel="sobre">
+              <div class="section-heading">
+                <h3>Sobre a Ana</h3>
+                <p>
+                  Esta apresentação pode evoluir facilmente com biografia, metodologia de trabalho,
+                  áreas de intervenção e público acompanhado, mantendo um tom acolhedor e contemporâneo.
+                </p>
+              </div>
+              <div class="features">
+                <article class="feature reveal delay-1">
+                  <div class="feature__icon" aria-hidden="true">✨</div>
+                  <h3>Primeira impressão mais forte</h3>
+                  <p>Camadas visuais, gradientes suaves e cartões com profundidade tornam a página mais memorável.</p>
+                </article>
+                <article class="feature reveal delay-2">
+                  <div class="feature__icon" aria-hidden="true">🌗</div>
+                  <h3>Conforto em qualquer contexto</h3>
+                  <p>O modo claro e escuro adapta a experiência ao utilizador sem depender de bibliotecas externas.</p>
+                </article>
+                <article class="feature reveal delay-3">
+                  <div class="feature__icon" aria-hidden="true">💬</div>
+                  <h3>Leitura mais envolvente</h3>
+                  <p>Melhor hierarquia visual para destacar informação profissional, artigos e próximos passos.</p>
+                </article>
+              </div>
+            </section>
 
-        <section class="shell reveal" aria-labelledby="locais">
-          <div class="section-heading">
-            <h2 id="locais">Locais de trabalho</h2>
-            <p>
-              Estrutura visual pronta para apresentar consultório, clínica, atendimento online e horários
-              de forma clara e elegante.
-            </p>
-          </div>
-          <div class="grid">
-            <article class="card reveal delay-1">
-              <h3>Consultório privado — informação a adicionar</h3>
-              <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
-            </article>
-            <article class="card reveal delay-2">
-              <h3>Clínica ou instituição — informação a adicionar</h3>
-              <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
-            </article>
-            <article class="card reveal delay-3">
-              <h3>Atendimento online — informação a adicionar</h3>
-              <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
-            </article>
-          </div>
-        </section>
+            <section class="tab-panel" id="panel-formacao" role="tabpanel" aria-labelledby="tab-formacao" data-panel="formacao" hidden>
+              <div class="section-heading">
+                <h3>Formação</h3>
+                <p>Secção preparada para evidenciar percurso académico, especializações e atualização contínua.</p>
+              </div>
+              <div class="card">
+                <ul class="stack">
+                  <li>Licenciatura e/ou mestrado em Psicologia — detalhe a adicionar</li>
+                  <li>Especializações clínicas ou formação complementar — detalhe a adicionar</li>
+                  <li>Cursos, certificações e supervisão contínua — detalhe a adicionar</li>
+                </ul>
+              </div>
+            </section>
 
-        <section class="shell reveal" aria-labelledby="projetos">
-          <div class="section-heading">
-            <h2 id="projetos">Projetos e envolvimento</h2>
-            <p>
-              Espaço preparado para destacar colaboração com instituições, iniciativas profissionais,
-              investigação e projetos comunitários.
-            </p>
-          </div>
-          <div class="timeline">
-            <article class="timeline__item reveal delay-1">
-              <h3>Projeto em destaque</h3>
-              <p>Apresente uma iniciativa central com foco no impacto, na missão e no papel desempenhado.</p>
-            </article>
-            <article class="timeline__item reveal delay-2">
-              <h3>Projeto comunitário ou de investigação</h3>
-              <p>Mostre colaborações, voluntariado ou trabalho académico com o contexto certo.</p>
-            </article>
-            <article class="timeline__item reveal delay-3">
-              <h3>Intervenções e workshops</h3>
-              <p>Inclua eventos, palestras e ações de sensibilização para enriquecer o percurso profissional.</p>
-            </article>
-          </div>
-        </section>
+            <section class="tab-panel" id="panel-locais" role="tabpanel" aria-labelledby="tab-locais" data-panel="locais" hidden>
+              <div class="section-heading">
+                <h3>Locais de trabalho</h3>
+                <p>
+                  Estrutura visual pronta para apresentar consultório, clínica, atendimento online e horários
+                  de forma clara e elegante.
+                </p>
+              </div>
+              <div class="grid">
+                <article class="card">
+                  <h3>Consultório privado — informação a adicionar</h3>
+                  <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
+                </article>
+                <article class="card">
+                  <h3>Clínica ou instituição — informação a adicionar</h3>
+                  <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
+                </article>
+                <article class="card">
+                  <h3>Atendimento online — informação a adicionar</h3>
+                  <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
+                </article>
+              </div>
+            </section>
 
-        <section class="shell reveal" id="artigos" aria-labelledby="artigos-heading">
-          <div class="section-heading">
-            <h2 id="artigos-heading">Artigos e publicações</h2>
-            <p>
-              Área reservada para reunir artigos escritos para revista, entrevistas, reflexões clínicas e
-              outros conteúdos editoriais.
-            </p>
-          </div>
-          <div class="grid">
-            <article class="card reveal delay-1">
-              <h3>Artigo para revista — título a adicionar</h3>
-              <p><strong>Nome da revista</strong></p>
-              <p>Use esta área para uma breve descrição do tema abordado e, se quiser, inclua depois o link.</p>
-            </article>
-            <article class="card reveal delay-2">
-              <h3>Outro artigo em destaque</h3>
-              <p><strong>Nome da revista</strong></p>
-              <p>Pode listar artigos recentes, crónicas, entrevistas ou outras publicações relevantes.</p>
-            </article>
+            <section class="tab-panel" id="panel-projetos" role="tabpanel" aria-labelledby="tab-projetos" data-panel="projetos" hidden>
+              <div class="section-heading">
+                <h3>Projetos e envolvimento</h3>
+                <p>
+                  Espaço preparado para destacar colaboração com instituições, iniciativas profissionais,
+                  investigação e projetos comunitários.
+                </p>
+              </div>
+              <div class="timeline">
+                <article class="timeline__item">
+                  <h3>Projeto em destaque</h3>
+                  <p>Apresente uma iniciativa central com foco no impacto, na missão e no papel desempenhado.</p>
+                </article>
+                <article class="timeline__item">
+                  <h3>Projeto comunitário ou de investigação</h3>
+                  <p>Mostre colaborações, voluntariado ou trabalho académico com o contexto certo.</p>
+                </article>
+                <article class="timeline__item">
+                  <h3>Intervenções e workshops</h3>
+                  <p>Inclua eventos, palestras e ações de sensibilização para enriquecer o percurso profissional.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="tab-panel" id="panel-artigos" role="tabpanel" aria-labelledby="tab-artigos" data-panel="artigos" hidden>
+              <div class="section-heading">
+                <h3>Artigos e publicações</h3>
+                <p>
+                  Área reservada para reunir artigos escritos para revista, entrevistas, reflexões clínicas e
+                  outros conteúdos editoriais.
+                </p>
+              </div>
+              <div class="grid">
+                <article class="card">
+                  <h3>Artigo para revista — título a adicionar</h3>
+                  <p><strong>Nome da revista</strong></p>
+                  <p>Use esta área para uma breve descrição do tema abordado e, se quiser, inclua depois o link.</p>
+                </article>
+                <article class="card">
+                  <h3>Outro artigo em destaque</h3>
+                  <p><strong>Nome da revista</strong></p>
+                  <p>Pode listar artigos recentes, crónicas, entrevistas ou outras publicações relevantes.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="tab-panel" id="panel-contacto" role="tabpanel" aria-labelledby="tab-contacto" data-panel="contacto" hidden>
+              <div class="contact">
+                <div class="section-heading">
+                  <h3>Contacto</h3>
+                  <p>
+                    O formulário pode ficar alojado no Google Forms. Basta substituir o valor de
+                    <strong>googleFormsUrl</strong> pelo URL definitivo quando estiver disponível.
+                  </p>
+                </div>
+                <div class="contact__meta">
+                  <div class="chips">
+                    <span class="chip">Resposta simples e direta</span>
+                    <span class="chip">Preparado para futuras atualizações</span>
+                  </div>
+                  <div class="actions">
+                    {hasGoogleForm ? (
+                      <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
+                        Abrir formulário de contacto
+                      </a>
+                    ) : (
+                      <span class="button button--disabled">Formulário disponível em breve</span>
+                    )}
+                  </div>
+                  <p>
+                    Quando o link final estiver pronto, esta área pode também incluir email profissional,
+                    redes sociais ou localização de consultório.
+                  </p>
+                </div>
+              </div>
+            </section>
           </div>
         </section>
 
@@ -811,37 +948,6 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
               </div>
             </div>
             <strong>Design com movimento, clareza e contraste.</strong>
-          </div>
-        </section>
-
-        <section class="shell reveal" aria-labelledby="contacto">
-          <div class="contact">
-            <div class="section-heading">
-              <h2 id="contacto">Contacto</h2>
-              <p>
-                O formulário pode ficar alojado no Google Forms. Basta substituir o valor de
-                <strong>googleFormsUrl</strong> pelo URL definitivo quando estiver disponível.
-              </p>
-            </div>
-            <div class="contact__meta">
-              <div class="chips">
-                <span class="chip">Resposta simples e direta</span>
-                <span class="chip">Preparado para futuras atualizações</span>
-              </div>
-              <div class="actions">
-                {hasGoogleForm ? (
-                  <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
-                    Abrir formulário de contacto
-                  </a>
-                ) : (
-                  <span class="button button--disabled">Formulário disponível em breve</span>
-                )}
-              </div>
-              <p>
-                Quando o link final estiver pronto, esta área pode também incluir email profissional,
-                redes sociais ou localização de consultório.
-              </p>
-            </div>
           </div>
         </section>
       </main>
@@ -881,12 +987,19 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
       });
 
-      const revealItems = document.querySelectorAll('.reveal');
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+      const tabLinks = document.querySelectorAll('[data-tab-link]');
       const motionDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      if (motionDisabled) {
-        revealItems.forEach((item) => item.classList.add('is-visible'));
-      } else {
+      const updateReveals = () => {
+        const revealItems = document.querySelectorAll('.reveal');
+
+        if (motionDisabled) {
+          revealItems.forEach((item) => item.classList.add('is-visible'));
+          return;
+        }
+
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -899,8 +1012,74 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           { threshold: 0.18 }
         );
 
-        revealItems.forEach((item) => observer.observe(item));
-      }
+        revealItems.forEach((item) => {
+          if (item.closest('[role="tabpanel"][hidden]')) return;
+          if (item.classList.contains('is-visible')) return;
+          observer.observe(item);
+        });
+      };
+
+      const activateTab = (tabId, options = {}) => {
+        const { focus = false, updateHash = true } = options;
+
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.tab === tabId;
+          tab.setAttribute('aria-selected', String(isActive));
+          tab.tabIndex = isActive ? 0 : -1;
+          if (isActive && focus) tab.focus();
+        });
+
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.panel !== tabId;
+        });
+
+        if (updateHash) {
+          history.replaceState(null, '', `#${tabId}`);
+        }
+
+        updateReveals();
+      };
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activateTab(tab.dataset.tab, { updateHash: true }));
+        tab.addEventListener('keydown', (event) => {
+          const nextIndexMap = {
+            ArrowRight: (index + 1) % tabs.length,
+            ArrowLeft: (index - 1 + tabs.length) % tabs.length,
+            Home: 0,
+            End: tabs.length - 1,
+          };
+
+          const nextIndex = nextIndexMap[event.key];
+          if (nextIndex === undefined) return;
+
+          event.preventDefault();
+          activateTab(tabs[nextIndex].dataset.tab, { focus: true, updateHash: true });
+        });
+      });
+
+      tabLinks.forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const targetTab = link.getAttribute('data-tab-link');
+          if (!targetTab) return;
+          event.preventDefault();
+          activateTab(targetTab, { updateHash: true });
+          document.querySelector('.tab-shell')?.scrollIntoView({ behavior: motionDisabled ? 'auto' : 'smooth', block: 'start' });
+        });
+      });
+
+      const hashTab = window.location.hash.replace('#', '');
+      const defaultTab = tabs.some((tab) => tab.dataset.tab === hashTab) ? hashTab : 'sobre';
+      activateTab(defaultTab, { updateHash: Boolean(hashTab) });
+
+      window.addEventListener('hashchange', () => {
+        const nextHashTab = window.location.hash.replace('#', '');
+        if (tabs.some((tab) => tab.dataset.tab === nextHashTab)) {
+          activateTab(nextHashTab, { updateHash: false });
+        }
+      });
+
+      updateReveals();
     </script>
   </body>
 </html>
