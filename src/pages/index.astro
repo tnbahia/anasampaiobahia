@@ -1033,7 +1033,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       };
 
       const activateTab = (tabId, options = {}) => {
-        const { focus = false, hashMode = 'push' } = options;
+        const { focus = false, hashMode = 'push', scrollTabIntoView = false } = options;
         const activeTabButton = tabs.find((tab) => tab.dataset.tab === tabId);
 
         tabs.forEach((tab) => {
@@ -1049,7 +1049,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           panel.setAttribute('aria-hidden', String(!isActive));
         });
 
-        if (activeTabButton) {
+        if (activeTabButton && scrollTabIntoView) {
           activeTabButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }
 
@@ -1094,7 +1094,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           if (nextIndex === undefined) return;
 
           event.preventDefault();
-          activateTab(tabs[nextIndex].dataset.tab, { focus: true, hashMode: 'replace' });
+          activateTab(tabs[nextIndex].dataset.tab, { focus: true, hashMode: 'replace', scrollTabIntoView: true });
         });
       });
 
@@ -1136,7 +1136,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         }
       };
 
-      window.addEventListener('hashchange', syncTabWithUrl);
+      window.addEventListener('hashchange', () => {
+        const nextHashTab = normalizeTabId(window.location.hash);
+        if (history.state?.activeTab === nextHashTab) return;
+        syncTabWithUrl();
+      });
       window.addEventListener('popstate', (event) => {
         const stateTab = normalizeTabId(event.state?.activeTab || window.location.hash);
         if (tabs.some((tab) => tab.dataset.tab === stateTab)) {
