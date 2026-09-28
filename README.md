@@ -17,11 +17,11 @@ npm run build
 
 ## Atualizar conteúdo
 
-O conteúdo principal está em `/home/runner/work/anasampaiobahia/anasampaiobahia/src/pages/index.astro`.
+O conteúdo principal está em `src/pages/index.astro`.
 
 - Atualize as listas de formação, locais de trabalho, projetos e artigos diretamente no topo do ficheiro.
 - Substitua `googleFormsUrl` pelo link definitivo do Google Forms.
 
 ## Deploy
 
-O deploy para GitHub Pages está configurado em `/home/runner/work/anasampaiobahia/anasampaiobahia/.github/workflows/deploy.yml`.
+O deploy para GitHub Pages está configurado em `.github/workflows/deploy.yml`.
