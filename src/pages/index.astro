@@ -14,70 +14,268 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       name="description"
       content="Landing page da Ana Sampaio Bahia, psicóloga, com informação profissional, projetos, artigos e contacto."
     />
+    <script is:inline>
+      (() => {
+        const savedTheme = localStorage.getItem('theme-preference');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const theme = savedTheme || systemTheme;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <style>
       :root {
-        color-scheme: light;
-        --background: #f8f5f1;
-        --surface: #ffffff;
-        --surface-alt: #efe4d8;
-        --text: #2f2a24;
-        --muted: #6b6259;
-        --accent: #8f5d57;
-        --accent-dark: #6f4540;
-        --border: #e1d5c8;
-        --shadow: 0 20px 50px rgba(47, 42, 36, 0.08);
-        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color-scheme: light dark;
+        --background: #f6f1eb;
+        --background-rgb: 246, 241, 235;
+        --surface: rgba(255, 255, 255, 0.8);
+        --surface-strong: rgba(255, 255, 255, 0.92);
+        --surface-alt: rgba(245, 231, 219, 0.9);
+        --text: #2e2924;
+        --muted: #675f58;
+        --accent: #9f5f72;
+        --accent-strong: #7f4358;
+        --accent-soft: rgba(159, 95, 114, 0.12);
+        --secondary: #4d7a83;
+        --secondary-soft: rgba(77, 122, 131, 0.16);
+        --border: rgba(115, 92, 74, 0.15);
+        --shadow: 0 24px 80px rgba(51, 39, 28, 0.14);
+        --shadow-soft: 0 12px 32px rgba(51, 39, 28, 0.08);
+      }
+
+      :root[data-theme='dark'] {
+        --background: #11131a;
+        --background-rgb: 17, 19, 26;
+        --surface: rgba(21, 26, 36, 0.72);
+        --surface-strong: rgba(24, 29, 41, 0.9);
+        --surface-alt: rgba(38, 47, 64, 0.78);
+        --text: #f4ede5;
+        --muted: #c8c1ba;
+        --accent: #f09ab1;
+        --accent-strong: #f7b3c4;
+        --accent-soft: rgba(240, 154, 177, 0.14);
+        --secondary: #8ed8dc;
+        --secondary-soft: rgba(142, 216, 220, 0.14);
+        --border: rgba(255, 255, 255, 0.12);
+        --shadow: 0 28px 90px rgba(3, 6, 12, 0.45);
+        --shadow-soft: 0 12px 36px rgba(3, 6, 12, 0.28);
       }
 
       * {
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
-        background: linear-gradient(180deg, #f7f1ea 0%, var(--background) 25%, #fff 100%);
+        min-height: 100vh;
         color: var(--text);
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(244, 204, 180, 0.55), transparent 28%),
+          radial-gradient(circle at top right, rgba(142, 216, 220, 0.28), transparent 24%),
+          linear-gradient(180deg, rgba(var(--background-rgb), 1) 0%, rgba(var(--background-rgb), 0.98) 30%, rgba(var(--background-rgb), 1) 100%);
+        overflow-x: hidden;
+      }
+
+      body::before,
+      body::after {
+        content: '';
+        position: fixed;
+        inset: auto;
+        width: 24rem;
+        height: 24rem;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(18px);
+        opacity: 0.45;
+        z-index: 0;
+        animation: float 16s ease-in-out infinite;
+      }
+
+      body::before {
+        top: -6rem;
+        right: -6rem;
+        background: rgba(159, 95, 114, 0.16);
+      }
+
+      body::after {
+        bottom: 10rem;
+        left: -8rem;
+        background: rgba(77, 122, 131, 0.14);
+        animation-delay: -8s;
       }
 
       a {
         color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font: inherit;
       }
 
       .page {
-        width: min(1120px, calc(100% - 2rem));
+        position: relative;
+        z-index: 1;
+        width: min(1160px, calc(100% - 2rem));
         margin: 0 auto;
+        padding-bottom: 4rem;
       }
 
-      .hero {
-        padding: 5rem 0 3rem;
-        display: grid;
-        gap: 2rem;
-        align-items: center;
-      }
-
-      .hero__content,
-      .card,
-      .contact {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(6px);
+      .shell {
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(20px);
+        background: linear-gradient(180deg, var(--surface-strong), var(--surface));
         border: 1px solid var(--border);
-        border-radius: 24px;
         box-shadow: var(--shadow);
       }
 
+      .shell,
+      .card,
+      .feature,
+      .contact,
+      .timeline__item,
+      .quote,
+      .spotlight {
+        border-radius: 28px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0 1.5rem;
+        background: rgba(var(--background-rgb), 0.58);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow-soft);
+        border-radius: 999px;
+        z-index: 5;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-weight: 700;
+      }
+
+      .brand__mark {
+        display: grid;
+        place-items: center;
+        width: 2.6rem;
+        height: 2.6rem;
+        border-radius: 0.95rem;
+        background: linear-gradient(135deg, var(--accent), var(--secondary));
+        color: #fff;
+        box-shadow: 0 12px 26px rgba(159, 95, 114, 0.24);
+      }
+
+      .topbar__actions,
+      .actions,
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem;
+      }
+
+      .theme-toggle,
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.95rem 1.35rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        color: var(--text);
+        transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+      }
+
+      .theme-toggle {
+        cursor: pointer;
+      }
+
+      .button--primary {
+        color: #fff;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        border-color: transparent;
+        box-shadow: 0 14px 30px rgba(159, 95, 114, 0.28);
+      }
+
+      .button--secondary {
+        background: var(--surface);
+      }
+
+      .button--disabled {
+        opacity: 0.75;
+        cursor: not-allowed;
+        background: var(--surface-alt);
+      }
+
+      .button:hover,
+      .theme-toggle:hover,
+      .card:hover,
+      .feature:hover,
+      .spotlight:hover,
+      .timeline__item:hover {
+        transform: translateY(-4px);
+      }
+
+      .button:hover,
+      .theme-toggle:hover {
+        box-shadow: var(--shadow-soft);
+        border-color: rgba(159, 95, 114, 0.3);
+      }
+
+      .button:focus-visible,
+      .theme-toggle:focus-visible {
+        outline: 3px solid var(--accent-strong);
+        outline-offset: 3px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 1.5rem;
+        padding: 1.5rem;
+      }
+
+      .hero__content,
+      .hero__panel {
+        padding: clamp(1.6rem, 3vw, 2.6rem);
+      }
+
       .hero__content {
-        padding: 2.5rem;
+        position: relative;
+      }
+
+      .eyebrow,
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.95rem;
       }
 
       .eyebrow {
-        display: inline-flex;
-        padding: 0.5rem 0.9rem;
-        border-radius: 999px;
-        background: var(--surface-alt);
-        color: var(--accent-dark);
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 1.25rem;
+        padding: 0.55rem 0.95rem;
+        margin-bottom: 1.35rem;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-weight: 700;
       }
 
       h1,
@@ -89,184 +287,440 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       }
 
       h1 {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        line-height: 1;
+        max-width: 10ch;
+        font-size: clamp(3.1rem, 8vw, 5.5rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
         margin-bottom: 1rem;
       }
 
       .lead {
-        font-size: 1.15rem;
-        line-height: 1.7;
+        max-width: 58ch;
         color: var(--muted);
-        max-width: 60ch;
+        font-size: 1.12rem;
+        line-height: 1.75;
       }
 
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
+      .hero__copy {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .hero__panel {
+        display: grid;
         gap: 1rem;
-        margin-top: 2rem;
+        align-content: space-between;
       }
 
-      .button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.95rem 1.4rem;
-        border-radius: 999px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: transform 160ms ease, background-color 160ms ease;
-      }
-
-      .button--primary {
-        background: var(--accent);
+      .spotlight {
+        position: relative;
+        overflow: hidden;
+        padding: 1.35rem;
+        background:
+          radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 28%),
+          linear-gradient(160deg, rgba(159, 95, 114, 0.94), rgba(77, 122, 131, 0.95));
         color: #fff;
+        min-height: 16rem;
+        box-shadow: 0 22px 40px rgba(77, 122, 131, 0.18);
       }
 
-      .button--secondary {
+      .spotlight::after {
+        content: '';
+        position: absolute;
+        inset: auto -3rem -3rem auto;
+        width: 12rem;
+        height: 12rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .spotlight h2 {
+        font-size: 1.25rem;
+        margin-bottom: 0.7rem;
+      }
+
+      .spotlight p {
+        line-height: 1.75;
+        max-width: 28ch;
+        color: rgba(255, 255, 255, 0.88);
+      }
+
+      .panel-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .stat {
+        padding: 1.15rem;
+        background: var(--surface-alt);
         border: 1px solid var(--border);
-        background: #fff;
+        border-radius: 22px;
       }
 
-      .button--disabled {
-        background: #f3ede6;
+      .stat strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-size: 1.7rem;
+      }
+
+      .stat span {
         color: var(--muted);
-        cursor: not-allowed;
-      }
-
-      .button:hover {
-        transform: translateY(-1px);
-      }
-
-      .button:focus-visible {
-        outline: 3px solid var(--accent-dark);
-        outline-offset: 3px;
+        line-height: 1.5;
+        font-size: 0.95rem;
       }
 
       main {
-        padding-bottom: 4rem;
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
       }
 
       section {
-        padding: 1.5rem 0;
+        padding: 1.75rem;
       }
 
       .section-heading {
         display: grid;
-        gap: 0.6rem;
+        gap: 0.7rem;
         margin-bottom: 1.5rem;
       }
 
-      .section-heading p {
+      .section-heading h2 {
+        font-size: clamp(1.7rem, 4vw, 2.4rem);
+        letter-spacing: -0.04em;
+      }
+
+      .section-heading p,
+      .card p,
+      .card li,
+      .feature p,
+      .timeline__item p,
+      .contact p,
+      .quote p {
         color: var(--muted);
-        line-height: 1.7;
-        max-width: 65ch;
+        line-height: 1.75;
+      }
+
+      .grid,
+      .features,
+      .timeline {
+        display: grid;
+        gap: 1rem;
       }
 
       .grid {
-        display: grid;
-        gap: 1.25rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .features {
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       }
 
-      .card {
-        padding: 1.5rem;
+      .timeline {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       }
 
-      .card h3 {
-        margin-bottom: 0.75rem;
+      .card,
+      .feature,
+      .timeline__item,
+      .quote,
+      .contact {
+        padding: 1.5rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-soft);
+        transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+      }
+
+      .card h3,
+      .feature h3,
+      .timeline__item h3 {
+        margin-bottom: 0.8rem;
         font-size: 1.1rem;
       }
 
-      .card p,
-      .card li {
-        color: var(--muted);
-        line-height: 1.7;
+      .chip {
+        padding: 0.45rem 0.8rem;
+        background: var(--surface-alt);
+        color: var(--accent-strong);
+        font-weight: 600;
+      }
+
+      .feature {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--accent-soft), transparent 55%);
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .feature:hover::before {
+        opacity: 1;
+      }
+
+      .feature__icon {
+        display: grid;
+        place-items: center;
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 1rem;
+        border-radius: 1rem;
+        background: linear-gradient(135deg, var(--accent-soft), var(--secondary-soft));
+        font-size: 1.3rem;
       }
 
       .stack {
         display: grid;
-        gap: 0.85rem;
+        gap: 0.95rem;
         padding-left: 1.1rem;
       }
 
-      .contact {
-        padding: 2rem;
+      .quote {
         display: grid;
         gap: 1rem;
-        margin-top: 1rem;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+        background:
+          radial-gradient(circle at top left, var(--accent-soft), transparent 28%),
+          var(--surface);
+      }
+
+      .quote strong {
+        font-size: 1rem;
+      }
+
+      .contact {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      .contact__meta {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .contact__meta a {
+        color: var(--accent-strong);
+        font-weight: 700;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 650ms ease, transform 650ms ease;
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .delay-1 {
+        transition-delay: 110ms;
+      }
+
+      .delay-2 {
+        transition-delay: 220ms;
+      }
+
+      .delay-3 {
+        transition-delay: 330ms;
       }
 
       footer {
-        padding: 0 0 3rem;
+        padding: 1.5rem 0 0;
+        text-align: center;
         color: var(--muted);
-        font-size: 0.95rem;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        50% {
+          transform: translate3d(0, 1.6rem, 0) scale(1.04);
+        }
+      }
+
+      @media (max-width: 880px) {
+        .topbar {
+          align-items: stretch;
+          flex-direction: column;
+          border-radius: 30px;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .quote {
+          grid-template-columns: 1fr;
+        }
       }
 
       @media (max-width: 720px) {
         .page {
-          width: min(100% - 1.25rem, 100%);
+          width: min(100% - 1rem, 100%);
         }
 
-        .hero {
-          padding-top: 2rem;
+        .hero,
+        section {
+          padding: 1rem;
         }
 
         .hero__content,
+        .hero__panel {
+          padding: 1.2rem;
+        }
+
+        .panel-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .shell,
         .card,
-        .contact {
-          border-radius: 20px;
+        .feature,
+        .contact,
+        .timeline__item,
+        .quote,
+        .spotlight {
+          border-radius: 22px;
+        }
+
+        h1 {
+          font-size: clamp(2.8rem, 18vw, 4rem);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+
+        .reveal {
+          opacity: 1;
+          transform: none;
         }
       }
     </style>
   </head>
   <body>
     <div class="page">
-      <header class="hero">
-        <div class="hero__content">
-          <span class="eyebrow">Psicologia clínica e acompanhamento personalizado</span>
-          <h1>Ana Sampaio Bahia</h1>
-          <p class="lead">
-            Página de apresentação profissional com espaço para partilhar percurso, áreas de atuação,
-            projetos e publicações. Pode ser atualizada facilmente à medida que novas informações
-            estiverem disponíveis.
-          </p>
-          <div class="actions">
-            {hasGoogleForm ? (
-              <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
-                Entrar em contacto
-              </a>
-            ) : (
-              <a class="button button--primary" href={contactUrl}>
-                Como entrar em contacto
-              </a>
-            )}
-            <a class="button button--secondary" href={articlesUrl}>Ver artigos</a>
+      <div class="topbar">
+        <a class="brand" href={import.meta.env.BASE_URL}>
+          <span class="brand__mark">AS</span>
+          <span>Ana Sampaio Bahia</span>
+        </a>
+        <div class="topbar__actions">
+          <a class="button button--secondary" href={articlesUrl}>Artigos</a>
+          <button class="theme-toggle" type="button" aria-live="polite" data-theme-toggle>
+            <span aria-hidden="true">🌙</span>
+            <span data-theme-label>Modo escuro</span>
+          </button>
+        </div>
+      </div>
+
+      <header class="shell hero">
+        <div class="hero__content reveal is-visible">
+          <span class="eyebrow">Psicologia clínica com presença digital mais acolhedora</span>
+          <div class="hero__copy">
+            <div>
+              <h1>Ana Sampaio Bahia</h1>
+              <p class="lead">
+                Uma landing page com atmosfera mais sofisticada, foco no bem-estar e espaço para
+                apresentar percurso, áreas de atuação, projetos e publicações com mais personalidade.
+              </p>
+            </div>
+            <div class="chips">
+              <span class="chip">Acompanhamento personalizado</span>
+              <span class="chip">Sessões presenciais e online</span>
+              <span class="chip">Conteúdo editorial</span>
+            </div>
+            <div class="actions">
+              {hasGoogleForm ? (
+                <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
+                  Entrar em contacto
+                </a>
+              ) : (
+                <a class="button button--primary" href={contactUrl}>
+                  Como entrar em contacto
+                </a>
+              )}
+              <a class="button button--secondary" href={articlesUrl}>Explorar artigos</a>
+            </div>
           </div>
         </div>
+
+        <aside class="hero__panel reveal is-visible delay-1" aria-label="Destaques">
+          <div class="spotlight">
+            <h2>Espaço pensado para transmitir calma e confiança</h2>
+            <p>
+              Visual renovado com profundidade, microanimações e contraste adaptável para leitura
+              confortável em qualquer ambiente.
+            </p>
+          </div>
+          <div class="panel-grid">
+            <div class="stat">
+              <strong>Light + Dark</strong>
+              <span>Alternância manual com preferência guardada no navegador.</span>
+            </div>
+            <div class="stat">
+              <strong>Motion</strong>
+              <span>Animações subtis, respeitando preferências de movimento reduzido.</span>
+            </div>
+          </div>
+        </aside>
       </header>
 
       <main>
-        <section aria-labelledby="sobre">
+        <section class="shell reveal" aria-labelledby="sobre">
           <div class="section-heading">
             <h2 id="sobre">Sobre a Ana</h2>
             <p>
-              Esta landing page foi pensada para apresentar, de forma clara e acolhedora, a prática
-              profissional da Ana Sampaio Bahia. Aqui pode acrescentar mais tarde a biografia, áreas de
-              intervenção, metodologia de trabalho e público acompanhado.
+              Esta apresentação pode evoluir facilmente com biografia, metodologia de trabalho,
+              áreas de intervenção e público acompanhado, mantendo um tom acolhedor e contemporâneo.
             </p>
+          </div>
+          <div class="features">
+            <article class="feature reveal delay-1">
+              <div class="feature__icon" aria-hidden="true">✨</div>
+              <h3>Primeira impressão mais forte</h3>
+              <p>Camadas visuais, gradientes suaves e cartões com profundidade tornam a página mais memorável.</p>
+            </article>
+            <article class="feature reveal delay-2">
+              <div class="feature__icon" aria-hidden="true">🌗</div>
+              <h3>Conforto em qualquer contexto</h3>
+              <p>O modo claro e escuro adapta a experiência ao utilizador sem depender de bibliotecas externas.</p>
+            </article>
+            <article class="feature reveal delay-3">
+              <div class="feature__icon" aria-hidden="true">💬</div>
+              <h3>Leitura mais envolvente</h3>
+              <p>Melhor hierarquia visual para destacar informação profissional, artigos e próximos passos.</p>
+            </article>
           </div>
         </section>
 
-        <section aria-labelledby="formacao">
+        <section class="shell reveal" aria-labelledby="formacao">
           <div class="section-heading">
             <h2 id="formacao">Formação</h2>
-            <p>
-              Espaço dedicado ao percurso académico, especializações e formação contínua.
-            </p>
+            <p>Secção preparada para evidenciar percurso académico, especializações e atualização contínua.</p>
           </div>
-          <div class="card">
+          <div class="card reveal delay-1">
             <ul class="stack">
               <li>Licenciatura e/ou mestrado em Psicologia — detalhe a adicionar</li>
               <li>Especializações clínicas ou formação complementar — detalhe a adicionar</li>
@@ -275,65 +729,69 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           </div>
         </section>
 
-        <section aria-labelledby="locais">
+        <section class="shell reveal" aria-labelledby="locais">
           <div class="section-heading">
             <h2 id="locais">Locais de trabalho</h2>
             <p>
-              Pode listar consultórios, clínicas, atendimento online e outras valências em que a Ana
-              desenvolve a sua atividade.
+              Estrutura visual pronta para apresentar consultório, clínica, atendimento online e horários
+              de forma clara e elegante.
             </p>
           </div>
           <div class="grid">
-            <article class="card">
+            <article class="card reveal delay-1">
               <h3>Consultório privado — informação a adicionar</h3>
               <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
             </article>
-            <article class="card">
+            <article class="card reveal delay-2">
               <h3>Clínica ou instituição — informação a adicionar</h3>
               <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
             </article>
-            <article class="card">
+            <article class="card reveal delay-3">
               <h3>Atendimento online — informação a adicionar</h3>
               <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
             </article>
           </div>
         </section>
 
-        <section aria-labelledby="projetos">
+        <section class="shell reveal" aria-labelledby="projetos">
           <div class="section-heading">
             <h2 id="projetos">Projetos e envolvimento</h2>
             <p>
-              Secção preparada para destacar iniciativas profissionais, trabalho voluntário, colaboração
-              com instituições e outros projetos relevantes.
+              Espaço preparado para destacar colaboração com instituições, iniciativas profissionais,
+              investigação e projetos comunitários.
             </p>
           </div>
-          <div class="grid">
-            <article class="card">
+          <div class="timeline">
+            <article class="timeline__item reveal delay-1">
               <h3>Projeto em destaque</h3>
-              <p>Espaço para apresentar iniciativas profissionais, voluntariado e colaborações relevantes.</p>
+              <p>Apresente uma iniciativa central com foco no impacto, na missão e no papel desempenhado.</p>
             </article>
-            <article class="card">
+            <article class="timeline__item reveal delay-2">
               <h3>Projeto comunitário ou de investigação</h3>
-              <p>Pode acrescentar aqui um resumo do impacto, público-alvo e papel desempenhado.</p>
+              <p>Mostre colaborações, voluntariado ou trabalho académico com o contexto certo.</p>
+            </article>
+            <article class="timeline__item reveal delay-3">
+              <h3>Intervenções e workshops</h3>
+              <p>Inclua eventos, palestras e ações de sensibilização para enriquecer o percurso profissional.</p>
             </article>
           </div>
         </section>
 
-        <section id="artigos" aria-labelledby="artigos-heading">
+        <section class="shell reveal" id="artigos" aria-labelledby="artigos-heading">
           <div class="section-heading">
             <h2 id="artigos-heading">Artigos e publicações</h2>
             <p>
-              Área reservada para reunir os artigos escritos para revista, com títulos, contexto e links
-              para leitura.
+              Área reservada para reunir artigos escritos para revista, entrevistas, reflexões clínicas e
+              outros conteúdos editoriais.
             </p>
           </div>
           <div class="grid">
-            <article class="card">
+            <article class="card reveal delay-1">
               <h3>Artigo para revista — título a adicionar</h3>
               <p><strong>Nome da revista</strong></p>
               <p>Use esta área para uma breve descrição do tema abordado e, se quiser, inclua depois o link.</p>
             </article>
-            <article class="card">
+            <article class="card reveal delay-2">
               <h3>Outro artigo em destaque</h3>
               <p><strong>Nome da revista</strong></p>
               <p>Pode listar artigos recentes, crónicas, entrevistas ou outras publicações relevantes.</p>
@@ -341,7 +799,22 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           </div>
         </section>
 
-        <section aria-labelledby="contacto">
+        <section class="shell reveal" aria-labelledby="citacao">
+          <div class="quote reveal delay-1">
+            <div>
+              <div class="section-heading">
+                <h2 id="citacao">Tom mais humano e editorial</h2>
+                <p>
+                  O novo visual cria uma presença online mais expressiva sem perder sobriedade,
+                  acessibilidade e facilidade de manutenção.
+                </p>
+              </div>
+            </div>
+            <strong>Design com movimento, clareza e contraste.</strong>
+          </div>
+        </section>
+
+        <section class="shell reveal" aria-labelledby="contacto">
           <div class="contact">
             <div class="section-heading">
               <h2 id="contacto">Contacto</h2>
@@ -350,14 +823,24 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
                 <strong>googleFormsUrl</strong> pelo URL definitivo quando estiver disponível.
               </p>
             </div>
-            <div class="actions">
-              {hasGoogleForm ? (
-                <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
-                  Abrir formulário de contacto
-                </a>
-              ) : (
-                <span class="button button--disabled">Formulário disponível em breve</span>
-              )}
+            <div class="contact__meta">
+              <div class="chips">
+                <span class="chip">Resposta simples e direta</span>
+                <span class="chip">Preparado para futuras atualizações</span>
+              </div>
+              <div class="actions">
+                {hasGoogleForm ? (
+                  <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
+                    Abrir formulário de contacto
+                  </a>
+                ) : (
+                  <span class="button button--disabled">Formulário disponível em breve</span>
+                )}
+              </div>
+              <p>
+                Quando o link final estiver pronto, esta área pode também incluir email profissional,
+                redes sociais ou localização de consultório.
+              </p>
             </div>
           </div>
         </section>
@@ -367,5 +850,57 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         <p>© {new Date().getFullYear()} Ana Sampaio Bahia — Psicóloga.</p>
       </footer>
     </div>
+
+    <script is:inline>
+      const root = document.documentElement;
+      const themeToggle = document.querySelector('[data-theme-toggle]');
+      const themeLabel = document.querySelector('[data-theme-label]');
+      const themeIcons = { light: '🌙', dark: '☀️' };
+      const themeText = {
+        light: 'Modo escuro',
+        dark: 'Modo claro',
+      };
+
+      const setTheme = (theme) => {
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        localStorage.setItem('theme-preference', theme);
+
+        if (themeToggle && themeLabel) {
+          themeToggle.setAttribute('aria-label', themeText[theme]);
+          themeLabel.textContent = themeText[theme];
+          const icon = themeToggle.querySelector('[aria-hidden="true"]');
+          if (icon) icon.textContent = themeIcons[theme];
+        }
+      };
+
+      const initialTheme = root.dataset.theme === 'dark' ? 'dark' : 'light';
+      setTheme(initialTheme);
+
+      themeToggle?.addEventListener('click', () => {
+        setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+
+      const revealItems = document.querySelectorAll('.reveal');
+      const motionDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (motionDisabled) {
+        revealItems.forEach((item) => item.classList.add('is-visible'));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.18 }
+        );
+
+        revealItems.forEach((item) => observer.observe(item));
+      }
+    </script>
   </body>
 </html>
