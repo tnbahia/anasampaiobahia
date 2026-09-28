@@ -1066,9 +1066,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           const href = link.getAttribute('href');
           if (!href) return;
           const targetUrl = new URL(href, window.location.href);
+          const currentUrl = new URL(window.location.href);
+          const targetPage = `${targetUrl.origin}${targetUrl.pathname}${targetUrl.search}`;
+          const currentPage = `${currentUrl.origin}${currentUrl.pathname}${currentUrl.search}`;
           const isSamePageHashLink =
-            targetUrl.origin === window.location.origin &&
-            targetUrl.pathname === window.location.pathname &&
+            targetPage === currentPage &&
             targetUrl.hash === `#${targetTab}`;
 
           if (!isSamePageHashLink) return;
