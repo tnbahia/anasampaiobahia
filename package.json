@@ -8,10 +8,16 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "build": "astro build && node scripts/validar-portugues.mjs",
+    "preview": "astro preview",
+    "validar:pt": "npm run build",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "astro": "^7.3.5"
+  },
+  "devDependencies": {
+    "@cspell/dict-pt-pt": "^3.0.6",
+    "cspell": "^10.3.6"
   }
 }

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Antes de cada commit, gera o site e corre o validador de português.
+# O commit é bloqueado se houver texto que não esteja em português de Portugal.
+npm run build --silent || {
+  echo ""
+  echo "Commit bloqueado: corrija os problemas acima e tente de novo."
+  exit 1
+}

@@ -7,4 +7,8 @@ export default defineConfig({
   site,
   base,
   output: 'static',
+  build: {
+    // Página única: o CSS vai diretamente no HTML, sem pedido extra.
+    inlineStylesheets: 'always',
+  },
 });

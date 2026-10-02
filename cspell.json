@@ -1,0 +1,54 @@
+{
+  "version": "0.2",
+  "language": "pt-PT",
+  "import": ["@cspell/dict-pt-pt/cspell-ext.json"],
+  "dictionaries": [
+    "pt-pt",
+    "!en_us",
+    "!en-gb",
+    "!en_US",
+    "!softwareTerms",
+    "!software-terms",
+    "!companies",
+    "!misc",
+    "!public-licenses",
+    "!cryptocurrencies",
+    "!filetypes",
+    "!fullstack",
+    "!html",
+    "!css",
+    "!typescript",
+    "!node",
+    "!npm",
+    "!fonts",
+    "!web-services",
+    "!aws",
+    "!networking-terms",
+    "!data-science",
+    "!k8s",
+    "!markdown",
+    "!lorem-ipsum",
+    "!en-common-misspellings",
+    "!en_us-common-misspellings"
+  ],
+  // Palavras aceites que não estão no dicionário.
+  // Só nomes próprios e termos corretos em português de Portugal — nunca grafias antigas (ex.: «acção»).
+  "words": [
+    // Nomes próprios
+    "Bahia",
+    "Brazelton",
+    "Campinácios",
+    "Clinics",
+    "DROPI",
+    "Essejota",
+    "Neurocompatível",
+    "Parenting",
+    "Skills",
+    "Touchpoints",
+    // Termos corretos em falta no dicionário
+    "autoconhecimento",
+    "empoderamento",
+    "psicoeducativo",
+    "videochamada"
+  ]
+}

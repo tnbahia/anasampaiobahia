@@ -1,64 +1,113 @@
 ---
-const googleFormsUrl = '';
-const hasGoogleForm = Boolean(googleFormsUrl);
-const contactUrl = `${import.meta.env.BASE_URL}#contacto`;
-const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
+import {
+  perfil,
+  destaques,
+  areas,
+  abordagem,
+  locais,
+  percurso,
+  formacaoAcademica,
+  formacaoComplementar,
+  outrasFormacoes,
+  projetos,
+  escrita,
+  voluntariado,
+} from '../data/ana';
+
+const base = import.meta.env.BASE_URL;
+const anosDeExperiencia = new Date().getFullYear() - perfil.inicioDaCarreira;
+const temFormulario = Boolean(perfil.formularioContactoUrl);
+const iniciais = perfil.iniciais;
+
+// O email vai codificado em entidades HTML para dificultar a recolha automática por robôs de spam.
+const codificar = (texto: string) => [...texto].map((c) => `&#${c.codePointAt(0)};`).join('');
+const linkEmail = `<a href="${codificar(`mailto:${perfil.email}`)}">${codificar(perfil.email)}</a>`;
+
+const foto = (caminho: string) => `${base}${caminho}`;
+
+const navegacao = [
+  { id: 'areas', texto: 'Áreas de consulta' },
+  { id: 'onde', texto: 'Onde' },
+  { id: 'percurso', texto: 'Percurso' },
+  { id: 'formacao', texto: 'Formação' },
+  { id: 'projetos', texto: 'Projetos' },
+];
 ---
 
 <html lang="pt-PT">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Ana Sampaio Bahia | Psicóloga</title>
+    <title>{perfil.nome} · {perfil.profissao} no Porto, em Santo Tirso e online</title>
     <meta
       name="description"
-      content="Landing page da Ana Sampaio Bahia, psicóloga, com informação profissional, projetos, artigos e contacto."
+      content={`${perfil.nome}, psicóloga (cédula profissional n.º ${perfil.cedulaOPP}). Consulta de adultos e adolescentes, terapia familiar e de casal e aconselhamento parental no Porto, em Santo Tirso e online.`}
     />
+    <meta property="og:title" content={`${perfil.nome} · ${perfil.profissao}`} />
+    <meta
+      property="og:description"
+      content="Consulta de adultos e adolescentes, terapia familiar e de casal e aconselhamento parental no Porto, em Santo Tirso e online."
+    />
+    <meta property="og:locale" content="pt_PT" />
     <script is:inline>
       (() => {
-        const savedTheme = localStorage.getItem('theme-preference');
+        let savedTheme = null;
+        try {
+          savedTheme = localStorage.getItem('theme-preference');
+        } catch {}
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         const theme = savedTheme || systemTheme;
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;
       })();
     </script>
-    <style>
+    <style is:global>
+      /* Paleta em tons terra: areia, terracota, castanho e verde-salva. */
       :root {
         color-scheme: light dark;
-        --background: #f6f1eb;
-        --background-rgb: 246, 241, 235;
-        --surface: rgba(255, 255, 255, 0.8);
-        --surface-strong: rgba(255, 255, 255, 0.92);
-        --surface-alt: rgba(245, 231, 219, 0.9);
-        --text: #2e2924;
-        --muted: #675f58;
-        --accent: #9f5f72;
-        --accent-strong: #7f4358;
-        --accent-soft: rgba(159, 95, 114, 0.12);
-        --secondary: #4d7a83;
-        --secondary-soft: rgba(77, 122, 131, 0.16);
-        --border: rgba(115, 92, 74, 0.15);
-        --shadow: 0 24px 80px rgba(51, 39, 28, 0.14);
-        --shadow-soft: 0 12px 32px rgba(51, 39, 28, 0.08);
+        --background: #f4eee4;
+        --background-rgb: 244, 238, 228;
+        --surface: rgba(255, 251, 245, 0.82);
+        --surface-strong: rgba(255, 251, 245, 0.94);
+        --surface-alt: rgba(236, 223, 204, 0.9);
+        --text: #3a2e25;
+        --muted: #6c5d4f;
+        --accent: #b0613f;
+        --accent-strong: #8e4a2e;
+        --accent-rgb: 176, 97, 63;
+        --accent-soft: rgba(176, 97, 63, 0.12);
+        --secondary: #7a8566;
+        --secondary-rgb: 122, 133, 102;
+        --secondary-soft: rgba(122, 133, 102, 0.18);
+        --glow-rgb: 222, 184, 140;
+        --brand-gradient: linear-gradient(160deg, rgba(166, 92, 58, 0.96), rgba(112, 124, 92, 0.96));
+        --on-accent: #fff;
+        --border: rgba(110, 84, 60, 0.16);
+        --shadow: 0 24px 80px rgba(60, 40, 24, 0.14);
+        --shadow-soft: 0 12px 32px rgba(60, 40, 24, 0.08);
       }
 
       :root[data-theme='dark'] {
-        --background: #11131a;
-        --background-rgb: 17, 19, 26;
-        --surface: rgba(21, 26, 36, 0.72);
-        --surface-strong: rgba(24, 29, 41, 0.9);
-        --surface-alt: rgba(38, 47, 64, 0.78);
-        --text: #f4ede5;
-        --muted: #c8c1ba;
-        --accent: #f09ab1;
-        --accent-strong: #f7b3c4;
-        --accent-soft: rgba(240, 154, 177, 0.14);
-        --secondary: #8ed8dc;
-        --secondary-soft: rgba(142, 216, 220, 0.14);
-        --border: rgba(255, 255, 255, 0.12);
-        --shadow: 0 28px 90px rgba(3, 6, 12, 0.45);
-        --shadow-soft: 0 12px 36px rgba(3, 6, 12, 0.28);
+        --background: #1b1612;
+        --background-rgb: 27, 22, 18;
+        --surface: rgba(40, 32, 26, 0.74);
+        --surface-strong: rgba(44, 35, 28, 0.92);
+        --surface-alt: rgba(60, 48, 38, 0.8);
+        --text: #f2e8dc;
+        --muted: #c9b9a6;
+        --accent: #e09a72;
+        --accent-strong: #ecb08e;
+        --accent-rgb: 224, 154, 114;
+        --accent-soft: rgba(224, 154, 114, 0.14);
+        --secondary: #b5bf9a;
+        --secondary-rgb: 181, 191, 154;
+        --secondary-soft: rgba(181, 191, 154, 0.14);
+        --glow-rgb: 150, 98, 60;
+        --brand-gradient: linear-gradient(160deg, rgba(140, 76, 46, 0.96), rgba(88, 98, 70, 0.96));
+        --on-accent: #2a1a10;
+        --border: rgba(255, 240, 225, 0.12);
+        --shadow: 0 28px 90px rgba(8, 5, 2, 0.45);
+        --shadow-soft: 0 12px 36px rgba(8, 5, 2, 0.28);
       }
 
       * {
@@ -67,6 +116,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
       html {
         scroll-behavior: smooth;
+        scroll-padding-top: 6.5rem;
       }
 
       body {
@@ -75,8 +125,8 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         color: var(--text);
         font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         background:
-          radial-gradient(circle at top left, rgba(244, 204, 180, 0.55), transparent 28%),
-          radial-gradient(circle at top right, rgba(142, 216, 220, 0.28), transparent 24%),
+          radial-gradient(circle at top left, rgba(var(--glow-rgb), 0.5), transparent 28%),
+          radial-gradient(circle at top right, rgba(var(--secondary-rgb), 0.22), transparent 24%),
           linear-gradient(180deg, rgba(var(--background-rgb), 1) 0%, rgba(var(--background-rgb), 0.98) 30%, rgba(var(--background-rgb), 1) 100%);
         overflow-x: hidden;
       }
@@ -85,7 +135,6 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       body::after {
         content: '';
         position: fixed;
-        inset: auto;
         width: 24rem;
         height: 24rem;
         border-radius: 50%;
@@ -99,13 +148,13 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       body::before {
         top: -6rem;
         right: -6rem;
-        background: rgba(159, 95, 114, 0.16);
+        background: rgba(var(--accent-rgb), 0.16);
       }
 
       body::after {
         bottom: 10rem;
         left: -8rem;
-        background: rgba(77, 122, 131, 0.14);
+        background: rgba(var(--secondary-rgb), 0.16);
         animation-delay: -8s;
       }
 
@@ -116,6 +165,17 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
       button {
         font: inherit;
+      }
+
+      h1,
+      h2,
+      h3,
+      p,
+      ul,
+      ol,
+      dl,
+      dd {
+        margin: 0;
       }
 
       .page {
@@ -137,24 +197,22 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
       .shell,
       .card,
-      .feature,
-      .contact,
-      .timeline__item,
       .quote,
       .spotlight {
         border-radius: 28px;
       }
 
+      /* Barra de topo */
+
       .topbar {
         position: sticky;
         top: 1rem;
         display: flex;
-        justify-content: space-between;
         align-items: center;
         gap: 1rem;
-        padding: 1rem 1.25rem;
+        padding: 0.75rem 0.75rem 0.75rem 1.25rem;
         margin: 1rem 0 1.5rem;
-        background: rgba(var(--background-rgb), 0.58);
+        background: rgba(var(--background-rgb), 0.72);
         border: 1px solid var(--border);
         backdrop-filter: blur(18px);
         box-shadow: var(--shadow-soft);
@@ -167,6 +225,7 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         align-items: center;
         gap: 0.8rem;
         font-weight: 700;
+        white-space: nowrap;
       }
 
       .brand__mark {
@@ -175,9 +234,31 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         width: 2.6rem;
         height: 2.6rem;
         border-radius: 0.95rem;
-        background: linear-gradient(135deg, var(--accent), var(--secondary));
+        background: var(--brand-gradient);
         color: #fff;
-        box-shadow: 0 12px 26px rgba(159, 95, 114, 0.24);
+        box-shadow: 0 12px 26px rgba(var(--accent-rgb), 0.24);
+      }
+
+      .nav {
+        display: flex;
+        gap: 0.25rem;
+        margin-left: auto;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .nav a {
+        padding: 0.6rem 0.85rem;
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        white-space: nowrap;
+        transition: background-color 180ms ease, color 180ms ease;
+      }
+
+      .nav a:hover {
+        background: var(--accent-soft);
+        color: var(--text);
       }
 
       .topbar__actions,
@@ -186,6 +267,11 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         display: flex;
         flex-wrap: wrap;
         gap: 0.85rem;
+      }
+
+      .topbar__actions {
+        flex-wrap: nowrap;
+        gap: 0.5rem;
       }
 
       .theme-toggle,
@@ -199,7 +285,13 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.16);
         color: var(--text);
+        white-space: nowrap;
         transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+      }
+
+      .topbar .button,
+      .topbar .theme-toggle {
+        padding: 0.7rem 1.1rem;
       }
 
       .theme-toggle {
@@ -207,11 +299,12 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       }
 
       .button--primary {
-        color: #fff;
+        color: var(--on-accent);
         background: linear-gradient(135deg, var(--accent), var(--accent-strong));
         border-color: transparent;
-        box-shadow: 0 14px 30px rgba(159, 95, 114, 0.28);
+        box-shadow: 0 14px 30px rgba(var(--accent-rgb), 0.28);
       }
+
 
       .button--secondary {
         background: var(--surface);
@@ -224,29 +317,24 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       }
 
       .button:hover,
-      .theme-toggle:hover,
-      .card:hover,
-      .feature:hover,
-      .spotlight:hover,
-      .timeline__item:hover {
-        transform: translateY(-4px);
-      }
-
-      .button:hover,
       .theme-toggle:hover {
+        transform: translateY(-3px);
         box-shadow: var(--shadow-soft);
-        border-color: rgba(159, 95, 114, 0.3);
       }
 
       .button:focus-visible,
-      .theme-toggle:focus-visible {
+      .theme-toggle:focus-visible,
+      .nav a:focus-visible,
+      a:focus-visible {
         outline: 3px solid var(--accent-strong);
         outline-offset: 3px;
       }
 
+      /* Apresentação */
+
       .hero {
         display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
         gap: 1.5rem;
         padding: 1.5rem;
       }
@@ -256,8 +344,9 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         padding: clamp(1.6rem, 3vw, 2.6rem);
       }
 
-      .hero__content {
-        position: relative;
+      .hero__copy {
+        display: grid;
+        gap: 1.5rem;
       }
 
       .eyebrow,
@@ -278,14 +367,6 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         font-weight: 700;
       }
 
-      h1,
-      h2,
-      h3,
-      p,
-      ul {
-        margin: 0;
-      }
-
       h1 {
         max-width: 10ch;
         font-size: clamp(3.1rem, 8vw, 5.5rem);
@@ -301,51 +382,54 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         line-height: 1.75;
       }
 
-      .hero__copy {
+      .facts {
         display: grid;
-        gap: 1.5rem;
+        gap: 0.6rem;
+        padding: 0;
+        list-style: none;
+      }
+
+      .facts li {
+        display: flex;
+        gap: 0.7rem;
+        align-items: center;
+        color: var(--text);
       }
 
       .hero__panel {
         display: grid;
         gap: 1rem;
-        align-content: space-between;
+        align-content: start;
       }
 
-      .spotlight {
+      .photo {
         position: relative;
+        display: grid;
+        place-items: center;
+        width: 100%;
+        aspect-ratio: 4 / 5;
         overflow: hidden;
-        padding: 1.35rem;
+        border-radius: 28px;
         background:
-          radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 28%),
-          linear-gradient(160deg, rgba(159, 95, 114, 0.94), rgba(77, 122, 131, 0.95));
-        color: #fff;
-        min-height: 16rem;
-        box-shadow: 0 22px 40px rgba(77, 122, 131, 0.18);
+          radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 28%),
+          var(--brand-gradient);
+        box-shadow: 0 22px 40px rgba(var(--secondary-rgb), 0.2);
       }
 
-      .spotlight::after {
-        content: '';
-        position: absolute;
-        inset: auto -3rem -3rem auto;
-        width: 12rem;
-        height: 12rem;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.12);
+      .photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
 
-      .spotlight h2 {
-        font-size: 1.25rem;
-        margin-bottom: 0.7rem;
+      .photo__initials {
+        color: rgba(255, 255, 255, 0.92);
+        font-size: clamp(4rem, 10vw, 6rem);
+        font-weight: 700;
+        letter-spacing: -0.05em;
       }
 
-      .spotlight p {
-        line-height: 1.75;
-        max-width: 28ch;
-        color: rgba(255, 255, 255, 0.88);
-      }
-
-      .panel-grid {
+      .stats {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1rem;
@@ -358,17 +442,20 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         border-radius: 22px;
       }
 
-      .stat strong {
+      .stat dt {
         display: block;
         margin-bottom: 0.25rem;
-        font-size: 1.7rem;
+        font-size: 1.6rem;
+        font-weight: 700;
       }
 
-      .stat span {
+      .stat dd {
         color: var(--muted);
         line-height: 1.5;
         font-size: 0.95rem;
       }
+
+      /* Secções */
 
       main {
         display: grid;
@@ -376,8 +463,8 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         margin-top: 1.5rem;
       }
 
-      section {
-        padding: 1.75rem;
+      .section {
+        padding: clamp(1.25rem, 3vw, 2.25rem);
       }
 
       .section-heading {
@@ -393,39 +480,27 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
 
       .section-heading p,
       .card p,
-      .card li,
-      .feature p,
-      .timeline__item p,
-      .contact p,
+      .prose p,
+      .entry p,
       .quote p {
         color: var(--muted);
         line-height: 1.75;
       }
 
-      .grid,
-      .features,
-      .timeline {
-        display: grid;
-        gap: 1rem;
+      .subheading {
+        margin: 2rem 0 1rem;
+        font-size: 1.2rem;
       }
 
       .grid {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      }
-
-      .features {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      }
-
-      .timeline {
+        display: grid;
+        gap: 1rem;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       }
 
-      .card,
-      .feature,
-      .timeline__item,
-      .quote,
-      .contact {
+      .card {
+        position: relative;
+        overflow: hidden;
         padding: 1.5rem;
         background: var(--surface);
         border: 1px solid var(--border);
@@ -433,39 +508,17 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
       }
 
-      .card h3,
-      .feature h3,
-      .timeline__item h3 {
-        margin-bottom: 0.8rem;
+      .card:hover {
+        transform: translateY(-4px);
+      }
+
+      .card h3 {
+        margin-bottom: 0.6rem;
         font-size: 1.1rem;
+        line-height: 1.35;
       }
 
-      .chip {
-        padding: 0.45rem 0.8rem;
-        background: var(--surface-alt);
-        color: var(--accent-strong);
-        font-weight: 600;
-      }
-
-      .feature {
-        position: relative;
-        overflow: hidden;
-      }
-
-      .feature::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, var(--accent-soft), transparent 55%);
-        opacity: 0;
-        transition: opacity 220ms ease;
-      }
-
-      .feature:hover::before {
-        opacity: 1;
-      }
-
-      .feature__icon {
+      .card__icon {
         display: grid;
         place-items: center;
         width: 3rem;
@@ -476,100 +529,164 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         font-size: 1.3rem;
       }
 
-      .stack {
-        display: grid;
-        gap: 0.95rem;
-        padding-left: 1.1rem;
+      .card__eyebrow {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--accent-strong);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
       }
 
-      .quote {
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: end;
-        background:
-          radial-gradient(circle at top left, var(--accent-soft), transparent 28%),
-          var(--surface);
-      }
-
-      .quote strong {
-        font-size: 1rem;
-      }
-
-      .contact {
-        display: grid;
-        gap: 1.25rem;
-      }
-
-      .contact__meta {
-        display: grid;
-        gap: 0.9rem;
-      }
-
-      .contact__meta a {
+      .card__link {
+        display: inline-flex;
+        margin-top: 0.9rem;
         color: var(--accent-strong);
         font-weight: 700;
       }
 
-      .tab-shell {
-        padding: 1.25rem;
+      .card__link:hover {
+        text-decoration: underline;
       }
 
-      .tab-shell__header {
+      .chip {
+        padding: 0.45rem 0.8rem;
+        background: var(--surface-alt);
+        color: var(--accent-strong);
+        font-weight: 600;
+      }
+
+      /* Abordagem */
+
+      .approach {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .prose {
         display: grid;
         gap: 1rem;
-        margin-bottom: 1.5rem;
       }
 
-      .tablist {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 0.75rem;
-        overflow-x: auto;
-        padding-bottom: 0.35rem;
-        scrollbar-width: thin;
-      }
-
-      .tab {
-        flex: 0 0 auto;
-        padding: 0.85rem 1rem;
-        border: 1px solid var(--border);
-        border-radius: 1rem;
-        background: var(--surface);
-        color: var(--muted);
-        cursor: pointer;
-        transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
-      }
-
-      .tab[aria-selected='true'] {
-        color: var(--text);
-        background: linear-gradient(135deg, var(--accent-soft), var(--secondary-soft));
-        border-color: rgba(159, 95, 114, 0.28);
-        box-shadow: var(--shadow-soft);
-      }
-
-      .tab:hover {
-        transform: translateY(-3px);
-        border-color: rgba(159, 95, 114, 0.22);
-      }
-
-      .tab:focus-visible {
-        outline: 3px solid var(--accent-strong);
-        outline-offset: 3px;
-      }
-
-      .tab-panels {
-        position: relative;
-      }
-
-      .tab-panel {
+      .quote {
         display: grid;
-        gap: 1.25rem;
-        animation: panelFade 260ms ease;
+        gap: 0.9rem;
+        padding: 1.75rem;
+        color: #fff;
+        background:
+          radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 28%),
+          var(--brand-gradient);
+        box-shadow: 0 22px 40px rgba(var(--secondary-rgb), 0.2);
       }
 
-      .tab-panel[hidden] {
-        display: none;
+      .quote blockquote {
+        margin: 0;
+        font-size: clamp(1.35rem, 3vw, 1.75rem);
+        font-weight: 700;
+        line-height: 1.35;
+        letter-spacing: -0.02em;
+      }
+
+      .quote p {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .photo--secondary {
+        aspect-ratio: 1;
+        max-width: 14rem;
+        border-radius: 50%;
+      }
+
+      /* Linha do tempo */
+
+      .timeline {
+        display: grid;
+        gap: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .entry {
+        position: relative;
+        display: grid;
+        grid-template-columns: 9.5rem minmax(0, 1fr);
+        gap: 1.25rem;
+        padding: 1.1rem 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .entry:first-child {
+        border-top: none;
+      }
+
+      .entry__period {
+        color: var(--accent-strong);
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding-top: 0.15rem;
+      }
+
+      .entry h3 {
+        margin-bottom: 0.35rem;
+        font-size: 1.05rem;
+        line-height: 1.4;
+      }
+
+      .entry__place {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .note {
+        margin-top: 1.25rem;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      /* Contacto */
+
+      .contact {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 1.5rem;
+        align-items: start;
+      }
+
+      .contact__box {
+        display: grid;
+        gap: 1rem;
+        padding: 1.5rem;
+        border-radius: 22px;
+        background: var(--surface-alt);
+        border: 1px solid var(--border);
+      }
+
+      .contact__box--pending {
+        border-style: dashed;
+      }
+
+      .contact__email a {
+        color: var(--accent-strong);
+        font-weight: 700;
+        word-break: break-all;
+      }
+
+      .contact__list {
+        display: grid;
+        gap: 0.5rem;
+        padding: 0;
+        list-style: none;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .small {
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
       }
 
       .reveal {
@@ -583,22 +700,13 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         transform: translateY(0);
       }
 
-      .delay-1 {
-        transition-delay: 110ms;
-      }
-
-      .delay-2 {
-        transition-delay: 220ms;
-      }
-
-      .delay-3 {
-        transition-delay: 330ms;
-      }
-
       footer {
+        display: grid;
+        gap: 0.35rem;
         padding: 1.5rem 0 0;
         text-align: center;
         color: var(--muted);
+        font-size: 0.95rem;
       }
 
       @keyframes float {
@@ -611,29 +719,31 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
         }
       }
 
-      @keyframes panelFade {
-        from {
-          opacity: 0;
-          transform: translateY(8px);
+      @media (max-width: 1240px) {
+        .theme-toggle__label {
+          display: none;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+      }
+
+      @media (max-width: 1080px) {
+        .nav {
+          display: none;
         }
       }
 
       @media (max-width: 880px) {
-        .topbar {
-          align-items: stretch;
-          flex-direction: column;
-          border-radius: 30px;
-        }
-
-        .hero {
+        .hero,
+        .approach,
+        .contact {
           grid-template-columns: 1fr;
         }
 
-        .quote {
+        .hero__panel {
+          grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+          align-items: stretch;
+        }
+
+        .stats {
           grid-template-columns: 1fr;
         }
       }
@@ -643,36 +753,54 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
           width: min(100% - 1rem, 100%);
         }
 
-        .hero,
-        section {
+        .topbar {
+          padding-left: 0.75rem;
+        }
+
+        .brand__name,
+        .theme-toggle__label {
+          display: none;
+        }
+
+        .topbar__actions {
+          margin-left: auto;
+        }
+
+        .hero {
           padding: 1rem;
         }
 
         .hero__content,
         .hero__panel {
-          padding: 1.2rem;
+          padding: 1rem;
         }
 
-        .panel-grid {
+        .hero__panel {
           grid-template-columns: 1fr;
         }
 
-        .tab-shell {
-          padding: 1rem;
+        .photo {
+          aspect-ratio: 1;
+          max-width: 18rem;
+        }
+
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .entry {
+          grid-template-columns: 1fr;
+          gap: 0.35rem;
         }
 
         .shell,
         .card,
-        .feature,
-        .contact,
-        .timeline__item,
-        .quote,
-        .spotlight {
+        .quote {
           border-radius: 22px;
         }
 
         h1 {
-          font-size: clamp(2.8rem, 18vw, 4rem);
+          font-size: clamp(2.8rem, 15vw, 4rem);
         }
       }
 
@@ -697,264 +825,283 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
   </head>
   <body>
     <div class="page">
-      <div class="topbar">
-        <a class="brand" href={import.meta.env.BASE_URL}>
-          <span class="brand__mark">AS</span>
-          <span>Ana Sampaio Bahia</span>
+      <header class="topbar">
+        <a class="brand" href={base} aria-label={`${perfil.nome}, página inicial`}>
+          <span class="brand__mark" aria-hidden="true">{iniciais}</span>
+          <span class="brand__name">{perfil.nome}</span>
         </a>
+        <nav class="nav" aria-label="Secções da página">
+          {navegacao.map((item) => <a href={`#${item.id}`}>{item.texto}</a>)}
+        </nav>
         <div class="topbar__actions">
-          <a class="button button--secondary" href={articlesUrl} data-tab-link="artigos">Artigos</a>
-          <button class="theme-toggle" type="button" data-theme-toggle>
-            <span aria-hidden="true">🌙</span>
-            <span data-theme-label>Modo escuro</span>
+          <a class="button button--primary" href="#contacto">Entrar em contacto</a>
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Mudar para o modo escuro">
+            <span aria-hidden="true" data-theme-icon>🌙</span>
+            <span class="theme-toggle__label" data-theme-label>Modo escuro</span>
           </button>
         </div>
-      </div>
+      </header>
 
-      <header class="shell hero">
+      <section class="shell hero" aria-labelledby="nome">
         <div class="hero__content reveal is-visible">
-          <span class="eyebrow">Psicologia clínica com presença digital mais acolhedora</span>
+          <span class="eyebrow">{perfil.profissao} · Cédula profissional n.º {perfil.cedulaOPP}</span>
           <div class="hero__copy">
             <div>
-              <h1>Ana Sampaio Bahia</h1>
-              <p class="lead">
-                Uma landing page com atmosfera mais sofisticada, foco no bem-estar e espaço para
-                apresentar percurso, áreas de atuação, projetos e publicações com mais personalidade.
-              </p>
+              <h1 id="nome">{perfil.nome}</h1>
+              <p class="lead">{perfil.resumo}</p>
             </div>
-            <div class="chips">
-              <span class="chip">Acompanhamento personalizado</span>
-              <span class="chip">Sessões presenciais e online</span>
-              <span class="chip">Conteúdo editorial</span>
-            </div>
+            <ul class="facts">
+              {destaques.map((item) => (
+                <li>
+                  <span aria-hidden="true">{item.icone}</span>
+                  {item.texto}
+                </li>
+              ))}
+            </ul>
             <div class="actions">
-              {hasGoogleForm ? (
-                <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
-                  Entrar em contacto
-                </a>
-              ) : (
-                <a class="button button--primary" href={contactUrl} data-tab-link="contacto">
-                  Como entrar em contacto
-                </a>
-              )}
-              <a class="button button--secondary" href={articlesUrl} data-tab-link="artigos">Explorar artigos</a>
+              <a class="button button--primary" href="#contacto">Entrar em contacto</a>
+              <a class="button button--secondary" href="#areas">Áreas de consulta</a>
             </div>
           </div>
         </div>
 
-        <aside class="hero__panel reveal is-visible delay-1" aria-label="Destaques">
-          <div class="spotlight">
-            <h2>Espaço pensado para transmitir calma e confiança</h2>
-            <p>
-              Visual renovado com profundidade, microanimações e contraste adaptável para leitura
-              confortável em qualquer ambiente.
-            </p>
+        <aside class="hero__panel reveal is-visible" aria-label="Em resumo">
+          <div class="photo">
+            {perfil.fotos.retrato ? (
+              <img src={foto(perfil.fotos.retrato)} alt={`Fotografia de ${perfil.nome}`} width="480" height="600" />
+            ) : (
+              <span class="photo__initials" aria-hidden="true">{iniciais}</span>
+            )}
           </div>
-          <div class="panel-grid">
+          <dl class="stats">
             <div class="stat">
-              <strong>Light + Dark</strong>
-              <span>Alternância manual com preferência guardada no navegador.</span>
+              <dt>+{anosDeExperiencia}</dt>
+              <dd>anos de experiência</dd>
             </div>
             <div class="stat">
-              <strong>Motion</strong>
-              <span>Animações subtis, respeitando preferências de movimento reduzido.</span>
+              <dt>3</dt>
+              <dd>formas de consulta: Porto, Santo Tirso e online</dd>
             </div>
-          </div>
+          </dl>
         </aside>
-      </header>
+      </section>
 
       <main>
-        <section class="shell tab-shell reveal" aria-labelledby="conteudo">
-          <div class="tab-shell__header">
-            <div class="section-heading">
-              <h2 id="conteudo">Conteúdo organizado por separadores</h2>
-              <p>
-                Em vez de apresentar tudo numa única sequência, cada área tem agora o seu próprio
-                separador para tornar a navegação mais leve e focada.
-              </p>
-            </div>
-            <div class="tablist" role="tablist" aria-label="Secções principais" aria-orientation="horizontal">
-              <button class="tab" id="tab-sobre" type="button" role="tab" aria-selected="true" aria-controls="panel-sobre" tabindex="0" data-tab="sobre">
-                Sobre
-              </button>
-              <button class="tab" id="tab-formacao" type="button" role="tab" aria-selected="false" aria-controls="panel-formacao" tabindex="-1" data-tab="formacao">
-                Formação
-              </button>
-              <button class="tab" id="tab-locais" type="button" role="tab" aria-selected="false" aria-controls="panel-locais" tabindex="-1" data-tab="locais">
-                Locais
-              </button>
-              <button class="tab" id="tab-projetos" type="button" role="tab" aria-selected="false" aria-controls="panel-projetos" tabindex="-1" data-tab="projetos">
-                Projetos
-              </button>
-              <button class="tab" id="tab-artigos" type="button" role="tab" aria-selected="false" aria-controls="panel-artigos" tabindex="-1" data-tab="artigos">
-                Artigos
-              </button>
-              <button class="tab" id="tab-contacto" type="button" role="tab" aria-selected="false" aria-controls="panel-contacto" tabindex="-1" data-tab="contacto">
-                Contacto
-              </button>
-            </div>
+        <section class="shell section reveal" id="areas" aria-labelledby="areas-titulo">
+          <div class="section-heading">
+            <h2 id="areas-titulo">Áreas de consulta</h2>
+            <p>Consultas para adultos, adolescentes, casais e famílias, presenciais ou online.</p>
           </div>
-
-          <div class="tab-panels">
-            <section class="tab-panel" id="panel-sobre" role="tabpanel" aria-labelledby="tab-sobre" data-panel="sobre">
-              <div class="section-heading">
-                <h3>Sobre a Ana</h3>
-                <p>
-                  Esta apresentação pode evoluir facilmente com biografia, metodologia de trabalho,
-                  áreas de intervenção e público acompanhado, mantendo um tom acolhedor e contemporâneo.
-                </p>
-              </div>
-              <div class="features">
-                <article class="feature reveal delay-1">
-                  <div class="feature__icon" aria-hidden="true">✨</div>
-                  <h3>Primeira impressão mais forte</h3>
-                  <p>Camadas visuais, gradientes suaves e cartões com profundidade tornam a página mais memorável.</p>
-                </article>
-                <article class="feature reveal delay-2">
-                  <div class="feature__icon" aria-hidden="true">🌗</div>
-                  <h3>Conforto em qualquer contexto</h3>
-                  <p>O modo claro e escuro adapta a experiência ao utilizador sem depender de bibliotecas externas.</p>
-                </article>
-                <article class="feature reveal delay-3">
-                  <div class="feature__icon" aria-hidden="true">💬</div>
-                  <h3>Leitura mais envolvente</h3>
-                  <p>Melhor hierarquia visual para destacar informação profissional, artigos e próximos passos.</p>
-                </article>
-              </div>
-            </section>
-
-            <section class="tab-panel" id="panel-formacao" role="tabpanel" aria-labelledby="tab-formacao" data-panel="formacao" hidden>
-              <div class="section-heading">
-                <h3>Formação</h3>
-                <p>Secção preparada para evidenciar percurso académico, especializações e atualização contínua.</p>
-              </div>
-              <div class="card">
-                <ul class="stack">
-                  <li>Licenciatura e/ou mestrado em Psicologia — detalhe a adicionar</li>
-                  <li>Especializações clínicas ou formação complementar — detalhe a adicionar</li>
-                  <li>Cursos, certificações e supervisão contínua — detalhe a adicionar</li>
-                </ul>
-              </div>
-            </section>
-
-            <section class="tab-panel" id="panel-locais" role="tabpanel" aria-labelledby="tab-locais" data-panel="locais" hidden>
-              <div class="section-heading">
-                <h3>Locais de trabalho</h3>
-                <p>
-                  Estrutura visual pronta para apresentar consultório, clínica, atendimento online e horários
-                  de forma clara e elegante.
-                </p>
-              </div>
-              <div class="grid">
-                <article class="card">
-                  <h3>Consultório privado — informação a adicionar</h3>
-                  <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
-                </article>
-                <article class="card">
-                  <h3>Clínica ou instituição — informação a adicionar</h3>
-                  <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
-                </article>
-                <article class="card">
-                  <h3>Atendimento online — informação a adicionar</h3>
-                  <p>Atualize este cartão com morada, modalidade de atendimento ou horários.</p>
-                </article>
-              </div>
-            </section>
-
-            <section class="tab-panel" id="panel-projetos" role="tabpanel" aria-labelledby="tab-projetos" data-panel="projetos" hidden>
-              <div class="section-heading">
-                <h3>Projetos e envolvimento</h3>
-                <p>
-                  Espaço preparado para destacar colaboração com instituições, iniciativas profissionais,
-                  investigação e projetos comunitários.
-                </p>
-              </div>
-              <div class="timeline">
-                <article class="timeline__item">
-                  <h3>Projeto em destaque</h3>
-                  <p>Apresente uma iniciativa central com foco no impacto, na missão e no papel desempenhado.</p>
-                </article>
-                <article class="timeline__item">
-                  <h3>Projeto comunitário ou de investigação</h3>
-                  <p>Mostre colaborações, voluntariado ou trabalho académico com o contexto certo.</p>
-                </article>
-                <article class="timeline__item">
-                  <h3>Intervenções e workshops</h3>
-                  <p>Inclua eventos, palestras e ações de sensibilização para enriquecer o percurso profissional.</p>
-                </article>
-              </div>
-            </section>
-
-            <section class="tab-panel" id="panel-artigos" role="tabpanel" aria-labelledby="tab-artigos" data-panel="artigos" hidden>
-              <div class="section-heading">
-                <h3>Artigos e publicações</h3>
-                <p>
-                  Área reservada para reunir artigos escritos para revista, entrevistas, reflexões clínicas e
-                  outros conteúdos editoriais.
-                </p>
-              </div>
-              <div class="grid">
-                <article class="card">
-                  <h3>Artigo para revista — título a adicionar</h3>
-                  <p><strong>Nome da revista</strong></p>
-                  <p>Use esta área para uma breve descrição do tema abordado e, se quiser, inclua depois o link.</p>
-                </article>
-                <article class="card">
-                  <h3>Outro artigo em destaque</h3>
-                  <p><strong>Nome da revista</strong></p>
-                  <p>Pode listar artigos recentes, crónicas, entrevistas ou outras publicações relevantes.</p>
-                </article>
-              </div>
-            </section>
-
-            <section class="tab-panel" id="panel-contacto" role="tabpanel" aria-labelledby="tab-contacto" data-panel="contacto" hidden>
-              <div class="contact">
-                <div class="section-heading">
-                  <h3>Contacto</h3>
-                  <p>O formulário pode ficar alojado no Google Forms. Basta substituir o valor de <strong>googleFormsUrl</strong> pelo URL definitivo quando estiver disponível.</p>
-                </div>
-                <div class="contact__meta">
-                  <div class="chips">
-                    <span class="chip">Resposta simples e direta</span>
-                    <span class="chip">Preparado para futuras atualizações</span>
-                  </div>
-                  <div class="actions">
-                    {hasGoogleForm ? (
-                      <a class="button button--primary" href={googleFormsUrl} target="_blank" rel="noopener noreferrer">
-                        Abrir formulário de contacto
-                      </a>
-                    ) : (
-                      <span class="button button--disabled">Formulário disponível em breve</span>
-                    )}
-                  </div>
-                  <p>
-                    Quando o link final estiver pronto, esta área pode também incluir email profissional,
-                    redes sociais ou localização de consultório.
-                  </p>
-                </div>
-              </div>
-            </section>
+          <div class="grid">
+            {areas.map((area) => (
+              <article class="card">
+                <div class="card__icon" aria-hidden="true">{area.icone}</div>
+                <h3>{area.titulo}</h3>
+                <p>{area.texto}</p>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section class="shell reveal" aria-labelledby="citacao">
-          <div class="quote reveal delay-1">
+        <section class="shell section reveal" id="abordagem" aria-labelledby="abordagem-titulo">
+          <div class="approach">
             <div>
               <div class="section-heading">
-                <h2 id="citacao">Tom mais humano e editorial</h2>
-                <p>
-                  O novo visual cria uma presença online mais expressiva sem perder sobriedade,
-                  acessibilidade e facilidade de manutenção.
-                </p>
+                <h2 id="abordagem-titulo">Abordagem</h2>
+              </div>
+              <div class="prose">
+                {abordagem.map((paragrafo) => <p>{paragrafo}</p>)}
               </div>
             </div>
-            <strong>Design com movimento, clareza e contraste.</strong>
+            <figure class="quote" style="margin: 0;">
+              <blockquote>«{perfil.lema}»</blockquote>
+              <figcaption><p>As perguntas que orientam o trabalho da Ana, na consulta e fora dela.</p></figcaption>
+            </figure>
+          </div>
+          {perfil.fotos.secundaria && (
+            <div class="photo photo--secondary" style="margin-top: 1.5rem;">
+              <img src={foto(perfil.fotos.secundaria)} alt={`Fotografia de ${perfil.nome}`} width="320" height="320" loading="lazy" />
+            </div>
+          )}
+        </section>
+
+        <section class="shell section reveal" id="onde" aria-labelledby="onde-titulo">
+          <div class="section-heading">
+            <h2 id="onde-titulo">Locais de consulta</h2>
+            <p>Presencialmente no Porto e em Santo Tirso, ou online, onde quer que esteja.</p>
+          </div>
+          <div class="grid">
+            {locais.map((local) => (
+              <article class="card">
+                <span class="card__eyebrow">{local.cidade}</span>
+                <h3>{local.nome}</h3>
+                <p>{local.morada}</p>
+                {local.mapa && (
+                  <a class="card__link" href={local.mapa} target="_blank" rel="noopener noreferrer">
+                    Ver no mapa ↗
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="shell section reveal" id="percurso" aria-labelledby="percurso-titulo">
+          <div class="section-heading">
+            <h2 id="percurso-titulo">Percurso profissional</h2>
+            <p>
+              Mais de {anosDeExperiencia} anos de trabalho com crianças, jovens e famílias, em escolas, instituições de
+              acolhimento, associações e consulta privada.
+            </p>
+          </div>
+          <ol class="timeline">
+            {percurso.map((item) => (
+              <li class="entry">
+                <span class="entry__period">{item.periodo}</span>
+                <div>
+                  <h3 class="entry__place">{item.local}</h3>
+                  <p>{item.texto}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section class="shell section reveal" id="formacao" aria-labelledby="formacao-titulo">
+          <div class="section-heading">
+            <h2 id="formacao-titulo">Formação</h2>
+            <p>Inscrita na Ordem dos Psicólogos Portugueses, com a cédula profissional n.º {perfil.cedulaOPP}.</p>
+          </div>
+          <ol class="timeline">
+            {formacaoAcademica.map((item) => (
+              <li class="entry">
+                <span class="entry__period">{item.periodo}</span>
+                <div>
+                  <h3>{item.titulo}</h3>
+                  <p class="entry__place">{item.instituicao}</p>
+                  <p>{item.texto}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <h3 class="subheading">Formação complementar</h3>
+          <ol class="timeline">
+            {formacaoComplementar.map((item) => (
+              <li class="entry">
+                <span class="entry__period">{item.periodo}</span>
+                <div>
+                  <h3>{item.titulo}</h3>
+                  <p>{item.instituicao}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p class="note">{outrasFormacoes}</p>
+        </section>
+
+        <section class="shell section reveal" id="projetos" aria-labelledby="projetos-titulo">
+          <div class="section-heading">
+            <h2 id="projetos-titulo">Projetos e escrita</h2>
+            <p>Projetos que criou e coordena, e textos sobre família e relações.</p>
+          </div>
+
+          <div class="grid">
+            {projetos.map((projeto) => (
+              <article class="card">
+                <span class="card__eyebrow">{projeto.periodo}</span>
+                <h3>{projeto.titulo}</h3>
+                <p>{projeto.texto}</p>
+              </article>
+            ))}
+          </div>
+
+          <h3 class="subheading">Escrita</h3>
+          <div class="grid">
+            {escrita.colaboracoes.map((item) => (
+              <article class="card">
+                <span class="card__eyebrow">{item.periodo}</span>
+                <h3>{item.titulo}</h3>
+                <p>{item.texto}</p>
+              </article>
+            ))}
+          </div>
+
+          <h3 class="subheading">Artigos</h3>
+          <div class="grid">
+            {escrita.artigos.map((artigo) => (
+              <article class="card">
+                <span class="card__eyebrow">
+                  {artigo.fonte} · <time datetime={artigo.data}>{artigo.dataLegivel}</time>
+                </span>
+                <h3>{artigo.titulo}</h3>
+                <p>{artigo.resumo}</p>
+                <a class="card__link" href={artigo.url} target="_blank" rel="noopener noreferrer">
+                  Ler o artigo ↗
+                </a>
+              </article>
+            ))}
+          </div>
+
+          <h3 class="subheading">Voluntariado</h3>
+          <ol class="timeline">
+            {voluntariado.map((item) => (
+              <li class="entry">
+                <span class="entry__period">{item.periodo}</span>
+                <div>
+                  <h3>{item.titulo}</h3>
+                  <p>{item.texto}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section class="shell section reveal" id="contacto" aria-labelledby="contacto-titulo">
+          <div class="contact">
+            <div>
+              <div class="section-heading">
+                <h2 id="contacto-titulo">Entrar em contacto</h2>
+                <p>
+                  Para marcar uma primeira consulta ou esclarecer alguma dúvida, preencha o formulário de contacto ou envie
+                  um email. A Ana responde com a maior brevidade possível.
+                </p>
+              </div>
+              <ul class="contact__list">
+                {locais.map((local) => (
+                  <li>
+                    <strong>{local.cidade}</strong> · {local.nome}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class:list={['contact__box', { 'contact__box--pending': !temFormulario }]}>
+              {temFormulario ? (
+                <a
+                  class="button button--primary"
+                  href={perfil.formularioContactoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Abrir o formulário de contacto
+                </a>
+              ) : (
+                <span class="button button--disabled" aria-disabled="true">Formulário de contacto disponível em breve</span>
+              )}
+              <p class="contact__email">Email: <Fragment set:html={linkEmail} /></p>
+              <p class="small">
+                Por uma questão de privacidade, não inclua no formulário nem no email informação clínica detalhada. Esses
+                assuntos serão tratados em consulta.
+              </p>
+            </div>
           </div>
         </section>
       </main>
 
       <footer>
-        <p>© {new Date().getFullYear()} Ana Sampaio Bahia — Psicóloga.</p>
+        <p>© {new Date().getFullYear()} {perfil.nome} · {perfil.profissao} · Cédula profissional n.º {perfil.cedulaOPP}</p>
+        <p>{perfil.localizacao} · Online</p>
       </footer>
     </div>
 
@@ -962,201 +1109,47 @@ const articlesUrl = `${import.meta.env.BASE_URL}#artigos`;
       const root = document.documentElement;
       const themeToggle = document.querySelector('[data-theme-toggle]');
       const themeLabel = document.querySelector('[data-theme-label]');
+      const themeIcon = document.querySelector('[data-theme-icon]');
       const themeIcons = { light: '🌙', dark: '☀️' };
-      const themeText = {
-        light: 'Modo escuro',
-        dark: 'Modo claro',
-      };
+      const themeText = { light: 'Modo escuro', dark: 'Modo claro' };
+      const themeAria = { light: 'Mudar para o modo escuro', dark: 'Mudar para o modo claro' };
 
-      const setTheme = (theme) => {
+      const setTheme = (theme, save) => {
         root.dataset.theme = theme;
         root.style.colorScheme = theme;
-        localStorage.setItem('theme-preference', theme);
-
-        if (themeToggle && themeLabel) {
-          themeToggle.setAttribute('aria-label', themeText[theme]);
-          themeLabel.textContent = themeText[theme];
-          const icon = themeToggle.querySelector('[aria-hidden="true"]');
-          if (icon) icon.textContent = themeIcons[theme];
+        if (save) {
+          try {
+            localStorage.setItem('theme-preference', theme);
+          } catch {}
         }
+        themeToggle?.setAttribute('aria-label', themeAria[theme]);
+        if (themeLabel) themeLabel.textContent = themeText[theme];
+        if (themeIcon) themeIcon.textContent = themeIcons[theme];
       };
 
-      const initialTheme = root.dataset.theme === 'dark' ? 'dark' : 'light';
-      setTheme(initialTheme);
-
+      setTheme(root.dataset.theme === 'dark' ? 'dark' : 'light', false);
       themeToggle?.addEventListener('click', () => {
-        setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+        setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
       });
 
-      const tabShell = document.querySelector('.tab-shell');
-      const tabs = Array.from(tabShell?.querySelectorAll('[role="tab"]') || []);
-      const tablist = tabShell?.querySelector('[role="tablist"]');
-      const panels = Array.from(tabShell?.querySelectorAll('[role="tabpanel"]') || []);
-      const tabLinks = document.querySelectorAll('[data-tab-link]');
+      const revealItems = document.querySelectorAll('.reveal:not(.is-visible)');
       const motionDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const supportsIntersectionObserver = 'IntersectionObserver' in window;
-      const tabOrientation = tablist?.getAttribute('aria-orientation') || 'horizontal';
-      const revealItems = Array.from(document.querySelectorAll('.reveal'));
-      const revealObserver = !motionDisabled && supportsIntersectionObserver
-        ? new IntersectionObserver(
-            (entries, observer) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add('is-visible');
-                  observer.unobserve(entry.target);
-                }
-              });
-            },
-            { threshold: 0.18 }
-          )
-        : null;
-
-      const updateReveals = () => {
-        if (motionDisabled || !supportsIntersectionObserver) {
-          revealItems.forEach((item) => item.classList.add('is-visible'));
-          return;
-        }
-
-        revealItems.forEach((item) => {
-          if (item.closest('[role="tabpanel"][hidden]')) return;
-          if (item.classList.contains('is-visible')) return;
-          revealObserver?.observe(item);
-        });
-      };
-
-      const normalizeTabId = (value) =>
-        value.replace(/^#/, '').replace(/^tab-/, '').replace(/^panel-/, '');
-
-      const buildHistoryState = (tabId) => {
-        const currentState = history.state && typeof history.state === 'object' ? history.state : {};
-        return { ...currentState, activeTab: tabId };
-      };
-
-      const activateTab = (tabId, options = {}) => {
-        const { focus = false, hashMode = 'push', scrollTabIntoView = false } = options;
-        const activeTabButton = tabs.find((tab) => tab.dataset.tab === tabId);
-
-        tabs.forEach((tab) => {
-          const isActive = tab.dataset.tab === tabId;
-          tab.setAttribute('aria-selected', String(isActive));
-          tab.tabIndex = isActive ? 0 : -1;
-          if (isActive && focus) tab.focus();
-        });
-
-        panels.forEach((panel) => {
-          const isActive = panel.dataset.panel === tabId;
-          panel.hidden = !isActive;
-          if (isActive) {
-            panel.tabIndex = -1;
-          } else {
-            panel.removeAttribute('tabindex');
-          }
-        });
-
-        if (activeTabButton && scrollTabIntoView) {
-          activeTabButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-        }
-
-        if (hashMode !== 'none') {
-          const nextUrl = new URL(window.location.href);
-          nextUrl.hash = tabId;
-          const nextState = buildHistoryState(tabId);
-          if (window.location.hash === `#${tabId}`) {
-            if (history.state?.activeTab !== tabId) {
-              history.replaceState(nextState, '', nextUrl);
-            }
-          } else if (hashMode === 'replace') {
-            history.replaceState(nextState, '', nextUrl);
-          } else {
-            history.pushState(nextState, '', nextUrl);
-          }
-        }
-
-        updateReveals();
-        return panels.find((panel) => panel.dataset.panel === tabId);
-      };
-
-      tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => {
-          if (tab.getAttribute('aria-selected') === 'true') return;
-          activateTab(tab.dataset.tab, { hashMode: 'push' });
-        });
-        tab.addEventListener('keydown', (event) => {
-          const nextIndexMap = {
-            Home: 0,
-            End: tabs.length - 1,
-          };
-
-          if (tabOrientation === 'vertical') {
-            nextIndexMap.ArrowDown = (index + 1) % tabs.length;
-            nextIndexMap.ArrowUp = (index - 1 + tabs.length) % tabs.length;
-          } else {
-            nextIndexMap.ArrowRight = (index + 1) % tabs.length;
-            nextIndexMap.ArrowLeft = (index - 1 + tabs.length) % tabs.length;
-          }
-
-          const nextIndex = nextIndexMap[event.key];
-          if (nextIndex === undefined) return;
-
-          event.preventDefault();
-          activateTab(tabs[nextIndex].dataset.tab, { focus: true, hashMode: 'replace', scrollTabIntoView: true });
-        });
-      });
-
-      tabLinks.forEach((link) => {
-        link.addEventListener('click', (event) => {
-          const targetTab = link.getAttribute('data-tab-link');
-          if (!targetTab) return;
-          const href = link.getAttribute('href');
-          if (!href) return;
-          const targetUrl = new URL(href, window.location.href);
-          const currentUrl = new URL(window.location.href);
-          const targetPage = `${targetUrl.origin}${targetUrl.pathname}${targetUrl.search}`;
-          const currentPage = `${currentUrl.origin}${currentUrl.pathname}${currentUrl.search}`;
-          const isSamePageHashLink =
-            targetPage === currentPage &&
-            targetUrl.hash === `#${targetTab}`;
-
-          if (!isSamePageHashLink) return;
-          if (tabs.find((tab) => tab.dataset.tab === targetTab)?.getAttribute('aria-selected') === 'true') return;
-          event.preventDefault();
-          const panel = activateTab(targetTab, { hashMode: 'push' });
-          document.querySelector('.tab-shell')?.scrollIntoView({ behavior: motionDisabled ? 'auto' : 'smooth', block: 'start' });
-          requestAnimationFrame(() => panel?.focus());
-        });
-      });
-
-      const hashTab = normalizeTabId(window.location.hash);
-      const defaultTab = tabs.some((tab) => tab.dataset.tab === hashTab) ? hashTab : 'sobre';
-      activateTab(defaultTab, { hashMode: 'none' });
-      if (history.state?.activeTab !== defaultTab) {
-        history.replaceState(buildHistoryState(defaultTab), '', window.location.href);
+      if (motionDisabled || !('IntersectionObserver' in window)) {
+        revealItems.forEach((item) => item.classList.add('is-visible'));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.08 }
+        );
+        revealItems.forEach((item) => observer.observe(item));
       }
-
-      const syncTabWithUrl = () => {
-        const nextHashTab = normalizeTabId(window.location.hash);
-        if (tabs.some((tab) => tab.dataset.tab === nextHashTab)) {
-          activateTab(nextHashTab, { hashMode: 'none' });
-        } else {
-          activateTab('sobre', { hashMode: 'none' });
-        }
-      };
-
-      window.addEventListener('hashchange', () => {
-        const nextHashTab = normalizeTabId(window.location.hash);
-        if (history.state?.activeTab === nextHashTab) return;
-        syncTabWithUrl();
-      });
-      window.addEventListener('popstate', (event) => {
-        const stateTab = normalizeTabId(event.state?.activeTab || window.location.hash);
-        if (tabs.some((tab) => tab.dataset.tab === stateTab)) {
-          activateTab(stateTab, { hashMode: 'none' });
-        } else {
-          activateTab('sobre', { hashMode: 'none' });
-        }
-      });
-
-      updateReveals();
     </script>
   </body>
 </html>
